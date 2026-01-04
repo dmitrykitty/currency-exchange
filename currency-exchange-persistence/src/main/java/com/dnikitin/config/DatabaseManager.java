@@ -15,4 +15,8 @@ public class DatabaseManager {
     public void migrate() {
         FLYWAY.migrate();
     }
+
+    public void close() {
+        DataSourceHikari.closeConnectionPool();
+    }
 }
