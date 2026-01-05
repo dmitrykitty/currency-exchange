@@ -1,4 +1,4 @@
-package com.dnikitin;
+package com.dnikitin.services;
 
 import com.dnikitin.config.DatabaseManager;
 

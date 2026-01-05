@@ -1,6 +1,6 @@
 package com.dnikitin.servlets;
 
-import com.dnikitin.ApplicationService;
+import com.dnikitin.services.ApplicationService;
 import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
 import jakarta.servlet.annotation.WebListener;

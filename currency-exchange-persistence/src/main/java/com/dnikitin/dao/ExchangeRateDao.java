@@ -6,21 +6,22 @@ import com.dnikitin.exceptions.DataIntegrityViolationException;
 import com.dnikitin.exceptions.DatabaseException;
 import com.dnikitin.mappers.ExchangeRowMapper;
 import com.dnikitin.mappers.RowMapper;
+import com.dnikitin.vo.CurrencyPair;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class ExchangeRateDao implements Dao<List<String>, ExchangeRateEntity> {
-    private static final Dao<List<String>, ExchangeRateEntity> INSTANCE = new ExchangeRateDao(new ExchangeRowMapper());
+public class ExchangeRateDao implements Dao<CurrencyPair, ExchangeRateEntity> {
+    private static final Dao<CurrencyPair, ExchangeRateEntity> INSTANCE = new ExchangeRateDao(new ExchangeRowMapper());
     private final RowMapper<ExchangeRateEntity> rowMapper;
 
     private static final String FIND_ALL_SQL = """
             select er.id rate_id,
                     er.rate rate_val,
                     bc.id base_id, bc.code base_code, bc.full_name base_name, bc.sign base_sign,
-                    tc.id target_id, tc.code target_code, tc.full_name target_name, tc.sign target_sign                                         \s
+                    tc.id target_id, tc.code target_code, tc.full_name target_name, tc.sign target_sign
              from exchange_rates er join currencies bc on er.base_currency_id = bc.id
                                     join currencies tc on er.target_currency_id = tc.id
             """;
@@ -29,14 +30,14 @@ public class ExchangeRateDao implements Dao<List<String>, ExchangeRateEntity> {
              select er.id rate_id,
                     er.rate rate_val,
                     bc.id base_id, bc.code base_code, bc.full_name base_name, bc.sign base_sign,
-                    tc.id target_id, tc.code target_code, tc.full_name target_name, tc.sign target_sign                                         \s
+                    tc.id target_id, tc.code target_code, tc.full_name target_name, tc.sign target_sign
              from exchange_rates er join currencies bc on er.base_currency_id = bc.id
                                     join currencies tc on er.target_currency_id = tc.id
              where bc.code = ? and tc.code = ?
             """;
 
     private static final String SAVE_SQL = """
-            insert into exchange_rates (base_currency_id, target_currency_id, rate) 
+            insert into exchange_rates (base_currency_id, target_currency_id, rate)
             values (?, ?, ?)
             """;
 
@@ -62,12 +63,12 @@ public class ExchangeRateDao implements Dao<List<String>, ExchangeRateEntity> {
     }
 
     @Override
-    public Optional<ExchangeRateEntity> findById(List<String> codes) {
+    public Optional<ExchangeRateEntity> findById(CurrencyPair currencies) {
         try (Connection connection = DataSourceHikari.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(FIND_BY_CURRENCIES_CODES_SQL)) {
 
-            preparedStatement.setString(1, codes.get(0));
-            preparedStatement.setString(2, codes.get(1));
+            preparedStatement.setString(1, currencies.baseCurrency());
+            preparedStatement.setString(2, currencies.targetCurrency());
 
             ResultSet resultSet = preparedStatement.executeQuery();
             ExchangeRateEntity exchangeRateEntity = null;
@@ -79,7 +80,9 @@ public class ExchangeRateDao implements Dao<List<String>, ExchangeRateEntity> {
         } catch (SQLException e) {
             throw new DatabaseException
                     (String.format(
-                            "Database error during finding exchange rate for pair (%s, %s)", codes.get(0), codes.get(1)),
+                            "Database error during finding exchange rate for pair (%s, %s)",
+                            currencies.baseCurrency(),
+                            currencies.targetCurrency()),
                             e);
         }
     }
@@ -118,7 +121,7 @@ public class ExchangeRateDao implements Dao<List<String>, ExchangeRateEntity> {
         }
     }
 
-    public static Dao<List<String>, ExchangeRateEntity> getInstance() {
+    public static Dao<CurrencyPair, ExchangeRateEntity> getInstance() {
         return INSTANCE;
     }
 }
