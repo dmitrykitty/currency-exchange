@@ -1,7 +1,6 @@
 package com.dnikitin.servlets;
 
-import com.dnikitin.config.DataSourceHikari;
-import com.dnikitin.config.DatabaseManager;
+import com.dnikitin.ApplicationService;
 import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
 import jakarta.servlet.annotation.WebListener;
@@ -10,10 +9,12 @@ import jakarta.servlet.annotation.WebListener;
 public class AppContextListener implements ServletContextListener {
     @Override
     public void contextInitialized(ServletContextEvent sce) {
-        DatabaseManager.migrate();
+        ApplicationService.getInstance()
+                .initializeApplication();
     }
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
-        DatabaseManager.close();
+        ApplicationService.getInstance()
+                .shutdownApplication();
     }
 }
