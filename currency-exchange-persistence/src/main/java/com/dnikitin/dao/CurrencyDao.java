@@ -2,7 +2,8 @@ package com.dnikitin.dao;
 
 import com.dnikitin.config.DataSourceHikari;
 import com.dnikitin.entity.CurrencyEntity;
-import com.dnikitin.exceptions.CurrencyDaoException;
+import com.dnikitin.exceptions.DatabaseException;
+import com.dnikitin.exceptions.DataIntegrityViolationException;
 import com.dnikitin.mappers.CurrencyMapper;
 import com.dnikitin.mappers.RowMapper;
 
@@ -12,7 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class CurrencyDao implements Dao<String, CurrencyEntity> {
-    private static final CurrencyDao INSTANCE = new CurrencyDao(new CurrencyMapper());
+    private static final Dao<String, CurrencyEntity> INSTANCE = new CurrencyDao(new CurrencyMapper());
     private final RowMapper<CurrencyEntity> rowMapper;
 
     private static final String FIND_ALL_SQL = """
@@ -48,9 +49,8 @@ public class CurrencyDao implements Dao<String, CurrencyEntity> {
             }
             return currencies;
         } catch (SQLException e) {
-            throw new CurrencyDaoException(e);
+            throw new DatabaseException("Database error during finding all currencies", e);
         }
-
     }
 
     @Override
@@ -67,7 +67,7 @@ public class CurrencyDao implements Dao<String, CurrencyEntity> {
             return Optional.ofNullable(currencyEntity);
 
         } catch (SQLException e) {
-            throw new CurrencyDaoException(e);
+            throw new DatabaseException("Database error during finding currency by its code", e);
         }
     }
 
@@ -94,11 +94,15 @@ public class CurrencyDao implements Dao<String, CurrencyEntity> {
             }
             return newEntity;
         } catch (SQLException e) {
-            throw new CurrencyDaoException(e);
+            //breaking constrains
+            if (e.getErrorCode() == 19) {
+                throw new DataIntegrityViolationException("Currency with code " + entity.code() + " already exists", e);
+            }
+            throw new DatabaseException("Database error during saving currency", e);
         }
     }
 
-    public static CurrencyDao getInstance() {
+    public static Dao<String, CurrencyEntity> getInstance() {
         return INSTANCE;
     }
 }
