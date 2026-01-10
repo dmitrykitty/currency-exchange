@@ -1,9 +1,12 @@
-### GET request to example server
-GET http://localhost:8080/exchangeRates
+###
+GET http://localhost:8080/currencies
 
 
 ###
-GET http://localhost:8080/exchangeRate/USDEUR
+GET http://localhost:8080/exchangeRates
+
+
+
 
 
 # exchangeRate by Codes

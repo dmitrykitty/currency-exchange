@@ -28,9 +28,10 @@ public class ExchangeRateService {
 
     public ExchangeRateEntity getExchangeRateByCodes(String baseCurrency, String targetCurrency) {
         try {
-            Optional<ExchangeRateEntity> maybeExchangeRate = exchangeRateDao.findById(new CurrencyPair(baseCurrency, targetCurrency));
-            return maybeExchangeRate.orElseThrow(
-                    () -> new EntityNotFoundException("No exchange rate found"));
+            Optional<ExchangeRateEntity> maybeExchangeRate = exchangeRateDao.findById(
+                    new CurrencyPair(baseCurrency, targetCurrency));
+            return maybeExchangeRate.orElseThrow(() ->
+                    new EntityNotFoundException("No exchange rate for currency pair " + baseCurrency + targetCurrency + " found"));
         } catch (DatabaseException e) {
             throw new ServiceUnavailableException(e);
         }
