@@ -3,9 +3,7 @@ package com.dnikitin.services;
 import com.dnikitin.dao.CurrencyDao;
 import com.dnikitin.dao.Dao;
 import com.dnikitin.entity.CurrencyEntity;
-import com.dnikitin.exceptions.DatabaseException;
-import com.dnikitin.exceptions.EntityNotFoundException;
-import com.dnikitin.exceptions.ServiceUnavailableException;
+import com.dnikitin.exceptions.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,7 +19,7 @@ public class CurrencyService {
         try {
             return currencyDao.findAll();
         } catch (DatabaseException e) {
-            throw new ServiceUnavailableException(e);
+            throw new ServiceUnavailableException(e.getMessage(), e);
         }
     }
 
@@ -31,7 +29,17 @@ public class CurrencyService {
             return maybeCurrency.orElseThrow(() ->
                     new EntityNotFoundException("No currency with code " + code + " found"));
         } catch (DatabaseException e) {
-            throw new ServiceUnavailableException(e);
+            throw new ServiceUnavailableException(e.getMessage(), e);
+        }
+    }
+
+    public CurrencyEntity saveCurrency(CurrencyEntity currency) {
+        try {
+            return currencyDao.save(currency);
+        }catch (DataIntegrityViolationException e) {
+            throw new EntityAlreadyExistsException(e.getMessage(), e);
+        } catch (DatabaseException e) {
+            throw new ServiceUnavailableException(e.getMessage(), e);
         }
     }
 

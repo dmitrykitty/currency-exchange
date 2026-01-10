@@ -11,15 +11,15 @@ public class ExchangeRowMapper implements RowMapper<ExchangeRateEntity> {
     public ExchangeRateEntity mapRow(ResultSet rs) throws SQLException {
         CurrencyEntity baseCurrency = CurrencyEntity.builder()
                 .id(rs.getInt("base_id"))
+                .name(rs.getString("base_name"))
                 .code(rs.getString("base_code"))
-                .fullName(rs.getString("base_name"))
                 .sign(rs.getString("base_sign"))
                 .build();
 
         CurrencyEntity targetCurrency = CurrencyEntity.builder()
                 .id(rs.getInt("target_id"))
+                .name(rs.getString("target_name"))
                 .code(rs.getString("target_code"))
-                .fullName(rs.getString("target_name"))
                 .sign(rs.getString("target_sign"))
                 .build();
 

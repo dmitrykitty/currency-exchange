@@ -5,7 +5,6 @@ import com.dnikitin.exceptions.InvalidCurrencyException;
 import com.dnikitin.services.CurrencyService;
 import com.dnikitin.util.Json;
 import com.fasterxml.jackson.databind.json.JsonMapper;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -19,7 +18,7 @@ public class CurrencyServlet extends HttpServlet {
     private final JsonMapper jsonMapper = Json.getInstance();
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String pathInfo = req.getPathInfo();
         if (pathInfo == null || pathInfo.equals("/")) {
             throw new InvalidCurrencyException("Missing currency code");

@@ -78,7 +78,7 @@ public class CurrencyDao implements Dao<String, CurrencyEntity> {
              PreparedStatement preparedStatement = connection.prepareStatement(SAVE_SQL, Statement.RETURN_GENERATED_KEYS)) {
 
             preparedStatement.setString(1, entity.code());
-            preparedStatement.setString(2, entity.fullName());
+            preparedStatement.setString(2, entity.name());
             preparedStatement.setString(3, entity.sign());
 
             preparedStatement.executeUpdate();
@@ -88,7 +88,7 @@ public class CurrencyDao implements Dao<String, CurrencyEntity> {
                 newEntity = CurrencyEntity.builder()
                         .id(generatedKeys.getInt(1))
                         .code(entity.code())
-                        .fullName(entity.fullName())
+                        .name(entity.name())
                         .sign(entity.sign())
                         .build();
             }

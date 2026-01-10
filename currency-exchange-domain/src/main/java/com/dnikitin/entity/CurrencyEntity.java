@@ -6,6 +6,7 @@ import lombok.Builder;
 public record CurrencyEntity(
         Integer id,
         String code,
-        String fullName,
+        String name,
         String sign) {
 }
+

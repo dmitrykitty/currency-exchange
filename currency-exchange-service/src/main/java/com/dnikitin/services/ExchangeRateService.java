@@ -22,7 +22,7 @@ public class ExchangeRateService {
 
             return exchangeRateDao.findAll();
         } catch (DatabaseException e) {
-            throw new ServiceUnavailableException(e);
+            throw new ServiceUnavailableException(e.getMessage(), e);
         }
     }
 
@@ -33,7 +33,7 @@ public class ExchangeRateService {
             return maybeExchangeRate.orElseThrow(() ->
                     new EntityNotFoundException("No exchange rate for currency pair " + baseCurrency + targetCurrency + " found"));
         } catch (DatabaseException e) {
-            throw new ServiceUnavailableException(e);
+            throw new ServiceUnavailableException(e.getMessage(), e);
         }
     }
 

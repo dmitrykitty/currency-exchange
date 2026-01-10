@@ -2,6 +2,31 @@
 GET http://localhost:8080/currencies
 
 ###
+POST http://localhost:8080/currencies
+Content-Type: application/json
+
+###
+POST http://localhost:8080/currencies
+Content-Type: application/json
+
+{
+  "name": "Australian dollar",
+  "sign": "A$"
+}
+
+###
+POST http://localhost:8080/currencies
+Content-Type: application/json
+
+{
+  "id": 0,
+  "code": "AUD",
+  "name": "Australian dollar",
+  "sign": "A$"
+}
+
+
+###
 GET http://localhost:8080/currency/USD
 
 ###
@@ -9,6 +34,9 @@ GET http://localhost:8080/currency/US
 
 ###
 GET http://localhost:8080/currency/
+
+###
+GET http://localhost:8080/currency/EUR
 
 
 ###

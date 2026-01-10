@@ -12,7 +12,7 @@ public class CurrencyMapper implements RowMapper<CurrencyEntity>{
         return CurrencyEntity.builder()
                 .id(rs.getInt("id"))
                 .code(rs.getString("code"))
-                .fullName(rs.getString("full_name"))
+                .name(rs.getString("full_name"))
                 .sign(rs.getString("sign"))
                 .build();
     }

@@ -1,10 +1,12 @@
 package com.dnikitin.servlets;
 
 import com.dnikitin.entity.CurrencyEntity;
+import com.dnikitin.exceptions.InvalidJsonInputException;
 import com.dnikitin.services.CurrencyService;
 import com.dnikitin.util.Json;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 import com.fasterxml.jackson.databind.json.JsonMapper;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,7 +20,7 @@ public class CurrenciesServlet extends HttpServlet {
     private final CurrencyService currencyService = CurrencyService.getInstance();
     private final JsonMapper jsonMapper = Json.getInstance();
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         List<CurrencyEntity> currencies = currencyService.getCurrencies();
 
         response.setContentType("application/json");
@@ -26,5 +28,27 @@ public class CurrenciesServlet extends HttpServlet {
 
         jsonMapper.writeValue(response.getWriter(), currencies);
 
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        try {
+            CurrencyEntity beforeCurrencyEntity = jsonMapper.readValue(req.getReader(), CurrencyEntity.class);
+            CurrencyEntity afterCurrencyEntity = currencyService.saveCurrency(beforeCurrencyEntity);
+
+            resp.setContentType("application/json");
+            resp.setCharacterEncoding("UTF-8");
+            jsonMapper.writeValue(resp.getWriter(), afterCurrencyEntity);
+
+        } catch (UnrecognizedPropertyException e) {
+            throw new InvalidJsonInputException("""
+                    Wrong Json format. Correct format:
+                    {
+                    "id" : 0,
+                    "code" : "USD",
+                    "name" : "United States dollar",
+                    "sign" : "$"
+                    };""", e);
+        }
     }
 }
