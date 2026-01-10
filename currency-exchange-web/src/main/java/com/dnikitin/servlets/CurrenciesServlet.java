@@ -4,13 +4,12 @@ import com.dnikitin.entity.CurrencyEntity;
 import com.dnikitin.exceptions.InvalidJsonInputException;
 import com.dnikitin.services.CurrencyService;
 import com.dnikitin.util.Json;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import tools.jackson.core.JacksonException;
 
 import java.io.IOException;
 import java.util.List;
@@ -40,7 +39,7 @@ public class CurrenciesServlet extends HttpServlet {
             resp.setCharacterEncoding("UTF-8");
             jsonMapper.writeValue(resp.getWriter(), afterCurrencyEntity);
 
-        } catch (UnrecognizedPropertyException e) {
+        } catch (JacksonException e ) {
             throw new InvalidJsonInputException("""
                     Wrong Json format. Correct format:
                     {
