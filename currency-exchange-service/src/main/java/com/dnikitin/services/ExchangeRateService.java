@@ -9,6 +9,7 @@ import com.dnikitin.vo.CurrencyPair;
 import java.util.List;
 import java.util.Optional;
 
+
 public class ExchangeRateService {
     private final Dao<CurrencyPair, ExchangeRateEntity> exchangeRateDao = ExchangeRateDao.getInstance();
     private static final ExchangeRateService INSTANCE = new ExchangeRateService();
