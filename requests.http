@@ -1,6 +1,15 @@
 ###
 GET http://localhost:8080/currencies
 
+###
+GET http://localhost:8080/currency/USD
+
+###
+GET http://localhost:8080/currency/US
+
+###
+GET http://localhost:8080/currency/
+
 
 ###
 GET http://localhost:8080/exchangeRates

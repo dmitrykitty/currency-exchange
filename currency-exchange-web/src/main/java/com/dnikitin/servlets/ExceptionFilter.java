@@ -31,7 +31,7 @@ public class ExceptionFilter implements Filter {
             }
             // Maps exceptions to HTTP error responses
             switch(cause){
-                case InvalidCurrencyPairException _ ->
+                case InvalidCurrencyException _ ->
                         sendError(httpResponse, HttpServletResponse.SC_BAD_REQUEST, cause.getMessage());
                 case EntityNotFoundException _ ->
                         sendError(httpResponse, HttpServletResponse.SC_NOT_FOUND, cause.getMessage());
