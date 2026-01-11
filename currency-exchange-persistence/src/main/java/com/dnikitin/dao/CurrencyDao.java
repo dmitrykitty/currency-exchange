@@ -94,12 +94,26 @@ public class CurrencyDao implements Dao<String, CurrencyEntity> {
             }
             return newEntity;
         } catch (SQLException e) {
-            //breaking constrains
-            if (e.getErrorCode() == 19) {
-                throw new DataIntegrityViolationException("Currency with code " + entity.code() + " already exists", e);
-            }
-            throw new DatabaseException("Database error during saving currency", e);
+            handleSaveException(e, entity.code());
         }
+        return null;
+    }
+
+    private void handleSaveException(SQLException e, String code) {
+        if (e.getErrorCode() == 19) {
+            String message = e.getMessage();
+
+            if (message != null && message.contains("UNIQUE constraint failed")) {
+                throw new DataIntegrityViolationException(
+                        "Currency with code '" + code + "' already exists in database", e);
+            }
+
+            if (message != null && message.contains("NOT NULL constraint failed")) {
+                throw new DataIntegrityViolationException("Required field is missing in database schema", e);
+            }
+        }
+
+        throw new DatabaseException("Database error during saving currency by its code", e);
     }
 
     public static Dao<String, CurrencyEntity> getInstance() {

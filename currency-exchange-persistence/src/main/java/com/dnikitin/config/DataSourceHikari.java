@@ -26,6 +26,7 @@ public class DataSourceHikari {
             config.setJdbcUrl("jdbc:sqlite:" + dbPath.toAbsolutePath());
             config.setDriverClassName("org.sqlite.JDBC");
             config.setUsername("currency-exchange-api");
+            config.setConnectionInitSql("PRAGMA foreign_keys = ON;"); //turning on foreign keys recognition
             DS = new HikariDataSource(config);
         } catch (IllegalArgumentException | IllegalStateException e) {
             throw new ExceptionInInitializerError("Failed to initialize Hikari Connection Pool: " + e.getMessage());
