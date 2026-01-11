@@ -4,7 +4,7 @@ import com.dnikitin.entity.CurrencyEntity;
 import com.dnikitin.exceptions.InvalidCurrencyException;
 import com.dnikitin.services.CurrencyService;
 import com.dnikitin.util.Json;
-import com.fasterxml.jackson.databind.json.JsonMapper;
+import tools.jackson.databind.json.JsonMapper;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;

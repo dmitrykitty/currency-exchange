@@ -2,7 +2,7 @@ package com.dnikitin.servlets;
 
 import com.dnikitin.exceptions.*;
 import com.dnikitin.util.Json;
-import com.fasterxml.jackson.databind.json.JsonMapper;
+import tools.jackson.databind.json.JsonMapper;
 import jakarta.servlet.*;
 import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletResponse;
@@ -30,8 +30,8 @@ public class ExceptionFilter implements Filter {
                 cause = e;
             }
             // Maps exceptions to HTTP error responses
-            switch(cause){
-                case InvalidCurrencyException _ ->
+            switch (cause) {
+                case InvalidCurrencyException _, InvalidJsonInputException _ ->
                         sendError(httpResponse, HttpServletResponse.SC_BAD_REQUEST, cause.getMessage());
                 case EntityNotFoundException _ ->
                         sendError(httpResponse, HttpServletResponse.SC_NOT_FOUND, cause.getMessage());

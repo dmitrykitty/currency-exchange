@@ -14,6 +14,7 @@ Content-Type: application/json
   "sign": "A$"
 }
 
+
 ###
 POST http://localhost:8080/currencies
 Content-Type: application/json
@@ -25,9 +26,20 @@ Content-Type: application/json
   "sign": "A$"
 }
 
+###
+POST http://localhost:8080/currencies
+Content-Type: application/json
+
+{
+  "id": 0,
+  "code": "BYN",
+  "name": "Belarussian Ruble",
+  "sign": "B₽"
+}
+
 
 ###
-GET http://localhost:8080/currency/USD
+GET http://localhost:8080/currency/BYN
 
 ###
 GET http://localhost:8080/currency/US

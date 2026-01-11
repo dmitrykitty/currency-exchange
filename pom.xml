@@ -37,9 +37,14 @@
                 <version>${jakarta.servlet.version}</version>
                 <scope>provided</scope>
             </dependency>
+<!--            <dependency>-->
+<!--                <groupId>tools.jackson.core</groupId>-->
+<!--                <artifactId>jackson-core</artifactId>-->
+<!--                <version>${jackson.version}</version>-->
+<!--            </dependency>-->
             <dependency>
                 <groupId>tools.jackson.core</groupId>
-                <artifactId>jackson-core</artifactId>
+                <artifactId>jackson-databind</artifactId>
                 <version>${jackson.version}</version>
             </dependency>
             <!-- https://mvnrepository.com/artifact/org.xerial/sqlite-jdbc -->
