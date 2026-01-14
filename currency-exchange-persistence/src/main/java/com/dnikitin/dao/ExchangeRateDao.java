@@ -3,11 +3,13 @@ package com.dnikitin.dao;
 import com.dnikitin.config.DataSourceHikari;
 import com.dnikitin.entity.ExchangeRateEntity;
 import com.dnikitin.exceptions.DataIntegrityViolationException;
+import com.dnikitin.exceptions.DataNotFoundException;
 import com.dnikitin.exceptions.DatabaseException;
 import com.dnikitin.mappers.ExchangeRowMapper;
 import com.dnikitin.mappers.RowMapper;
 import com.dnikitin.vo.CurrencyPair;
 
+import java.math.BigDecimal;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,10 +44,14 @@ public class ExchangeRateDao implements Dao<CurrencyPair, ExchangeRateEntity> {
             """;
 
     private static final String UPDATE_SQL = """
-            update exchange_rates set
-            rate = ?
-            where base_currency_id = ? and  target_currency_id = ?
-    """;
+                    update exchange_rates set
+                    rate = ?
+                    where id = (select er.id
+                                from exchange_rates er join currencies bc on er.base_currency_id = bc.id
+                                                       join currencies tc on er.target_currency_id = tc.id
+                                where bc.code = ? and tc.code = ?
+                                            )
+            """;
 
 
     private ExchangeRateDao(RowMapper<ExchangeRateEntity> rowMapper) {
@@ -92,6 +98,52 @@ public class ExchangeRateDao implements Dao<CurrencyPair, ExchangeRateEntity> {
                             e);
         }
     }
+
+    public ExchangeRateEntity update(CurrencyPair currencies, BigDecimal rate) {
+        try (Connection connection = DataSourceHikari.getConnection()) {
+            try (PreparedStatement preparedStatementUpdate = connection.prepareStatement(UPDATE_SQL);
+                 PreparedStatement preparedStatementSelect = connection.prepareStatement(FIND_BY_CURRENCIES_CODES_SQL)) {
+                connection.setAutoCommit(false);
+
+                preparedStatementUpdate.setBigDecimal(1, rate);
+                preparedStatementUpdate.setString(2, currencies.baseCurrency());
+                preparedStatementUpdate.setString(3, currencies.targetCurrency());
+
+                int changed = preparedStatementUpdate.executeUpdate();
+
+                if (changed == 0) {
+                    connection.rollback();
+                    throw new DataNotFoundException("Proposed exchange rate pair does not exist: "
+                            + currencies.baseCurrency() + "-" + currencies.targetCurrency());
+                }
+
+                preparedStatementSelect.setString(1, currencies.baseCurrency());
+                preparedStatementSelect.setString(2, currencies.targetCurrency());
+
+                ResultSet resultSet = preparedStatementSelect.executeQuery();
+                ExchangeRateEntity exchangeRateEntity = null;
+                if (resultSet.next()) {
+                    exchangeRateEntity = rowMapper.mapRow(resultSet);
+                }
+
+                connection.commit();
+                return exchangeRateEntity;
+            } catch (Exception e) {
+                connection.rollback();
+                throw e;
+            } finally {
+                connection.setAutoCommit(true);
+            }
+        } catch (SQLException e) {
+            throw new DatabaseException
+                    (String.format(
+                            "Database error during updating exchange rate for pair (%s, %s)",
+                            currencies.baseCurrency(),
+                            currencies.targetCurrency()),
+                            e);
+        }
+    }
+
 
     @Override
     public ExchangeRateEntity save(ExchangeRateEntity entity) {

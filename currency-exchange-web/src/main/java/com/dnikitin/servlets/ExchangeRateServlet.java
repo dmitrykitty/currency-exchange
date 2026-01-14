@@ -44,7 +44,7 @@ public class ExchangeRateServlet extends HttpServlet {
         jsonMapper.writeValue(resp.getWriter(), exchangeRateByCodes);
     }
 
-    private void doPatch(HttpServletRequest req, HttpServletResponse resp) {
+    private void doPatch(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String rate = req.getParameter("rate");
         if(rate == null){
             throw new InvalidCurrencyException("Missing required fields: rate");
@@ -52,9 +52,14 @@ public class ExchangeRateServlet extends HttpServlet {
 
         String pathInfo = req.getPathInfo();
         CurrencyPair currencyPair = prepareCurrencyPair(pathInfo);
-        BigDecimal rateDecimal = BigDecimal.valueOf(Double.parseDouble(rate));
+        BigDecimal rateDecimal = new BigDecimal(rate);
 
+        ExchangeRateEntity exchangeRateEntity = exchangeRateService.updateExchangeRate(currencyPair, rateDecimal);
 
+        resp.setContentType("application/json");
+        resp.setCharacterEncoding("UTF-8");
+
+        jsonMapper.writeValue(resp.getWriter(), exchangeRateEntity);
     }
 
     private CurrencyPair prepareCurrencyPair(String pathInfo) {

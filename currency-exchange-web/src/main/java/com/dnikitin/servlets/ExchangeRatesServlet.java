@@ -45,7 +45,7 @@ public class ExchangeRatesServlet extends HttpServlet {
 
         CurrencyEntity baseCurrencyByCode = currencyService.getCurrencyByCode(baseCurrencyCode);
         CurrencyEntity targetCurrencyByCode = currencyService.getCurrencyByCode(targetCurrencyCode);
-        BigDecimal rateDecimal = BigDecimal.valueOf(Double.parseDouble(rate));
+        BigDecimal rateDecimal = new BigDecimal(rate);
 
         ExchangeRateEntity exchangeRateToSave = ExchangeRateEntity.builder()
                 .id(0)

@@ -6,6 +6,7 @@ import com.dnikitin.entity.ExchangeRateEntity;
 import com.dnikitin.exceptions.*;
 import com.dnikitin.vo.CurrencyPair;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -47,10 +48,15 @@ public class ExchangeRateService {
         }
     }
 
-    public ExchangeRateEntity updateExchangeRate(ExchangeRateEntity exchangeRate) {
+    public ExchangeRateEntity updateExchangeRate(CurrencyPair currencyPair, BigDecimal rate) {
         try {
-            return exchangeRateDao.save(exchangeRate);
-        } catch (DataIntegrityViolationException e) {}
+            ExchangeRateDao exchangeRateDaoNew = (ExchangeRateDao) exchangeRateDao;
+            return exchangeRateDaoNew.update(currencyPair, rate);
+        } catch (DataNotFoundException e) {
+            throw new EntityNotFoundException(e.getMessage());
+        } catch (DatabaseException e) {
+            throw new ServiceUnavailableException(e.getMessage(), e);
+        }
     }
 
     public static ExchangeRateService getInstance() {
