@@ -1,7 +1,7 @@
 package com.dnikitin.servlets;
 
 import com.dnikitin.entity.CurrencyEntity;
-import com.dnikitin.exceptions.InvalidJsonInputException;
+import com.dnikitin.exceptions.InvalidInputException;
 import com.dnikitin.services.CurrencyService;
 import com.dnikitin.util.Json;
 import tools.jackson.databind.json.JsonMapper;
@@ -35,7 +35,7 @@ public class CurrenciesServlet extends HttpServlet {
             CurrencyEntity beforeCurrencyEntity = jsonMapper.readValue(req.getReader(), CurrencyEntity.class);
 
             if (beforeCurrencyEntity.code() == null || beforeCurrencyEntity.name() == null || beforeCurrencyEntity.sign() == null) {
-                throw new InvalidJsonInputException("Missing required fields: code, name, or sign");
+                throw new InvalidInputException("Missing required fields: code, name, or sign");
             }
 
             CurrencyEntity afterCurrencyEntity = currencyService.saveCurrency(beforeCurrencyEntity);
@@ -46,7 +46,7 @@ public class CurrenciesServlet extends HttpServlet {
             jsonMapper.writeValue(resp.getWriter(), afterCurrencyEntity);
 
         } catch (JacksonException e) {
-            throw new InvalidJsonInputException(" Wrong Json format. Correct format: " +
+            throw new InvalidInputException(" Wrong Json format. Correct format: " +
                     "{\"id\" : 0, \"code\" : \"USD\", \"name\" : \"US Dollar\", \"sign\" : \"$\"};", e);
         }
     }

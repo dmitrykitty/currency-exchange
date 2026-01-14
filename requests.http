@@ -3,40 +3,25 @@ GET http://localhost:8080/currencies
 
 ###
 POST http://localhost:8080/currencies
-Content-Type: application/json
+Content-Type: application/x-www-form-urlencoded
 
 ###
 POST http://localhost:8080/currencies
-Content-Type: application/json
+Content-Type: application/x-www-form-urlencoded
 
-{
-  "name": "Australian dollar",
-  "sign": "A$"
-}
+name = Australian dollar &
+sign =A$
 
 
-###
-POST http://localhost:8080/currencies
-Content-Type: application/json
-
-{
-  "id": 0,
-  "code": "AUD",
-  "name": "Australian dollar",
-  "sign": "A$"
-}
 
 ###
 POST http://localhost:8080/currencies
-Content-Type: application/json
+Content-Type: application/x-www-form-urlencoded
 
-{
-  "id": 0,
-  "code": "BYN",
-  "name": "Belarussian Ruble",
-  "sign": "B₽"
-}
-
+id = 0 &
+code = AUD &
+name = Australian dollar &
+sign = A$
 
 ###
 GET http://localhost:8080/currency/BYN
