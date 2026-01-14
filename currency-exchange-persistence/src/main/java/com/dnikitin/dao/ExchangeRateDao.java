@@ -41,6 +41,12 @@ public class ExchangeRateDao implements Dao<CurrencyPair, ExchangeRateEntity> {
             values (?, ?, ?)
             """;
 
+    private static final String UPDATE_SQL = """
+            update exchange_rates set
+            rate = ?
+            where base_currency_id = ? and  target_currency_id = ?
+    """;
+
 
     private ExchangeRateDao(RowMapper<ExchangeRateEntity> rowMapper) {
         this.rowMapper = rowMapper;

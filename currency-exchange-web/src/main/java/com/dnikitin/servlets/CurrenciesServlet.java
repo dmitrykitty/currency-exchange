@@ -31,23 +31,28 @@ public class CurrenciesServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        try {
-            CurrencyEntity beforeCurrencyEntity = jsonMapper.readValue(req.getReader(), CurrencyEntity.class);
+        String name = req.getParameter("name");
+        String code = req.getParameter("code");
+        String sign = req.getParameter("sign");
 
-            if (beforeCurrencyEntity.code() == null || beforeCurrencyEntity.name() == null || beforeCurrencyEntity.sign() == null) {
-                throw new InvalidInputException("Missing required fields: code, name, or sign");
-            }
-
-            CurrencyEntity afterCurrencyEntity = currencyService.saveCurrency(beforeCurrencyEntity);
-
-            resp.setContentType("application/json");
-            resp.setCharacterEncoding("UTF-8");
-            resp.setStatus(HttpServletResponse.SC_CREATED);
-            jsonMapper.writeValue(resp.getWriter(), afterCurrencyEntity);
-
-        } catch (JacksonException e) {
-            throw new InvalidInputException(" Wrong Json format. Correct format: " +
-                    "{\"id\" : 0, \"code\" : \"USD\", \"name\" : \"US Dollar\", \"sign\" : \"$\"};", e);
+        if (name == null || code == null || sign == null) {
+            throw new InvalidInputException("Missing required fields: code, name, or sign");
         }
+
+        CurrencyEntity currencyToSave = CurrencyEntity.builder()
+                .id(0)
+                .name(name)
+                .code(code)
+                .sign(sign)
+                .build();
+
+        CurrencyEntity currencyEntity = currencyService.saveCurrency(currencyToSave);
+
+        resp.setContentType("application/json");
+        resp.setCharacterEncoding("UTF-8");
+        resp.setStatus(HttpServletResponse.SC_CREATED);
+
+        jsonMapper.writeValue(resp.getWriter(), currencyEntity);
+
     }
 }

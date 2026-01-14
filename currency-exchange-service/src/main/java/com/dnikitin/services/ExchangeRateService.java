@@ -47,6 +47,12 @@ public class ExchangeRateService {
         }
     }
 
+    public ExchangeRateEntity updateExchangeRate(ExchangeRateEntity exchangeRate) {
+        try {
+            return exchangeRateDao.save(exchangeRate);
+        } catch (DataIntegrityViolationException e) {}
+    }
+
     public static ExchangeRateService getInstance() {
         return INSTANCE;
     }
