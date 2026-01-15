@@ -14,7 +14,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
-@WebServlet("/currency/*")
+@WebServlet("/api/currency/*")
 public class CurrencyServlet extends HttpServlet {
     private CurrencyService currencyService;
     private JsonMapper jsonMapper;

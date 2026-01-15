@@ -18,7 +18,7 @@ import java.math.BigDecimal;
 import java.util.Map;
 
 
-@WebServlet("/exchangeRate/*")
+@WebServlet("/api/exchangeRate/*")
 public class ExchangeRateServlet extends HttpServlet {
     private ExchangeRateService exchangeRateService;
     private JsonMapper jsonMapper;

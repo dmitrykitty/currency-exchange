@@ -15,7 +15,7 @@ import tools.jackson.databind.json.JsonMapper;
 import java.io.IOException;
 import java.math.BigDecimal;
 
-@WebServlet("/exchange")
+@WebServlet("/api/exchange")
 public class ExchangeServlet extends HttpServlet {
     private ExchangeService exchangeService;
     private JsonMapper jsonMapper;

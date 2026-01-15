@@ -9,7 +9,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
-@WebFilter("/*")
+@WebFilter("/api/*")
 public class ExceptionFilter implements Filter {
 
     private final JsonMapper jsonMapper = Json.getInstance();
