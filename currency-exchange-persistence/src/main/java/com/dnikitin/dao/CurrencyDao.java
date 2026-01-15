@@ -13,8 +13,8 @@ import java.util.List;
 import java.util.Optional;
 
 public class CurrencyDao implements Dao<String, CurrencyEntity> {
-    private static final Dao<String, CurrencyEntity> INSTANCE = new CurrencyDao(new CurrencyMapper());
     private final RowMapper<CurrencyEntity> rowMapper;
+
 
     private static final String FIND_ALL_SQL = """
             select id, code, full_name, sign
@@ -33,7 +33,7 @@ public class CurrencyDao implements Dao<String, CurrencyEntity> {
             """;
 
 
-    private CurrencyDao(RowMapper<CurrencyEntity> rowMapper) {
+    public CurrencyDao(RowMapper<CurrencyEntity> rowMapper) {
         this.rowMapper = rowMapper;
     }
 
@@ -114,9 +114,5 @@ public class CurrencyDao implements Dao<String, CurrencyEntity> {
         }
 
         throw new DatabaseException("Database error during saving currency by its code", e);
-    }
-
-    public static Dao<String, CurrencyEntity> getInstance() {
-        return INSTANCE;
     }
 }

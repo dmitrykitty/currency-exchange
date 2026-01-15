@@ -1,9 +1,11 @@
-package com.dnikitin.servlets;
+package com.dnikitin.controllers.servlets;
 
+import com.dnikitin.controllers.AppContext;
 import com.dnikitin.entity.CurrencyEntity;
 import com.dnikitin.exceptions.InvalidCurrencyException;
 import com.dnikitin.services.CurrencyService;
 import com.dnikitin.util.Json;
+import jakarta.servlet.ServletException;
 import tools.jackson.databind.json.JsonMapper;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -14,8 +16,16 @@ import java.io.IOException;
 
 @WebServlet("/currency/*")
 public class CurrencyServlet extends HttpServlet {
-    private final CurrencyService currencyService = CurrencyService.getInstance();
-    private final JsonMapper jsonMapper = Json.getInstance();
+    private CurrencyService currencyService;
+    private JsonMapper jsonMapper;
+
+    @Override
+    public void init() throws ServletException {
+        AppContext context = (AppContext) getServletContext().getAttribute(AppContext.class.getCanonicalName());
+
+        currencyService = context.getCurrencyService();
+        jsonMapper = context.getJsonMapper();
+    }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {

@@ -9,10 +9,10 @@ import java.util.List;
 import java.util.Optional;
 
 public class CurrencyService {
-    private final Dao<String, CurrencyEntity> currencyDao = CurrencyDao.getInstance();
-    private final static CurrencyService INSTANCE = new CurrencyService();
+    private final Dao<String, CurrencyEntity> currencyDao;
 
-    private CurrencyService() {
+    public CurrencyService(Dao<String, CurrencyEntity> currencyDao) {
+        this.currencyDao = currencyDao;
     }
 
     public List<CurrencyEntity> getCurrencies() {
@@ -41,10 +41,5 @@ public class CurrencyService {
         } catch (DatabaseException e) {
             throw new ServiceUnavailableException(e.getMessage(), e);
         }
-    }
-
-
-    public static CurrencyService getInstance() {
-        return INSTANCE;
     }
 }

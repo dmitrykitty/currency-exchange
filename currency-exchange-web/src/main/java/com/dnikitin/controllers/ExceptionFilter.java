@@ -1,4 +1,4 @@
-package com.dnikitin.servlets;
+package com.dnikitin.controllers;
 
 import com.dnikitin.exceptions.*;
 import com.dnikitin.util.Json;

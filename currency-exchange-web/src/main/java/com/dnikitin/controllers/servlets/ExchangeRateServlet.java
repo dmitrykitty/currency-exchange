@@ -1,9 +1,10 @@
-package com.dnikitin.servlets;
+package com.dnikitin.controllers.servlets;
 
+import com.dnikitin.controllers.AppContext;
 import com.dnikitin.entity.ExchangeRateEntity;
 import com.dnikitin.exceptions.InvalidCurrencyException;
 import com.dnikitin.services.ExchangeRateService;
-import com.dnikitin.util.Json;
+import com.dnikitin.util.HttpUtil;
 import com.dnikitin.vo.CurrencyPair;
 import tools.jackson.databind.json.JsonMapper;
 import jakarta.servlet.ServletException;
@@ -14,15 +15,25 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.Map;
+
 
 @WebServlet("/exchangeRate/*")
 public class ExchangeRateServlet extends HttpServlet {
-    private final ExchangeRateService exchangeRateService = ExchangeRateService.getInstance();
-    private final JsonMapper jsonMapper = Json.getInstance();
+    private ExchangeRateService exchangeRateService;
+    private JsonMapper jsonMapper;
+
+    @Override
+    public void init() {
+        AppContext context = (AppContext) getServletContext().getAttribute(AppContext.class.getCanonicalName());
+
+        exchangeRateService = context.getExchangeRateService();
+        jsonMapper = context.getJsonMapper();
+    }
 
     @Override
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        if(req.getMethod().equals("PATCH")){
+        if (req.getMethod().equals("PATCH")) {
             doPatch(req, resp);
         } else {
             super.service(req, resp);
@@ -32,7 +43,7 @@ public class ExchangeRateServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String pathInfo = req.getPathInfo();
-        CurrencyPair currencyPair = prepareCurrencyPair(pathInfo);
+        CurrencyPair currencyPair = HttpUtil.prepareCurrencyPair(pathInfo);
 
 
         resp.setContentType("application/json");
@@ -45,13 +56,14 @@ public class ExchangeRateServlet extends HttpServlet {
     }
 
     private void doPatch(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        String rate = req.getParameter("rate");
-        if(rate == null){
+        Map<String, String> params = HttpUtil.prepareRequestParams(req.getReader());
+        String rate = params.get("rate");
+        if (rate == null) {
             throw new InvalidCurrencyException("Missing required fields: rate");
         }
 
         String pathInfo = req.getPathInfo();
-        CurrencyPair currencyPair = prepareCurrencyPair(pathInfo);
+        CurrencyPair currencyPair = HttpUtil.prepareCurrencyPair(pathInfo);
         BigDecimal rateDecimal = new BigDecimal(rate);
 
         ExchangeRateEntity exchangeRateEntity = exchangeRateService.updateExchangeRate(currencyPair, rateDecimal);
@@ -60,21 +72,6 @@ public class ExchangeRateServlet extends HttpServlet {
         resp.setCharacterEncoding("UTF-8");
 
         jsonMapper.writeValue(resp.getWriter(), exchangeRateEntity);
-    }
-
-    private CurrencyPair prepareCurrencyPair(String pathInfo) {
-        if (pathInfo == null || pathInfo.equals("/")) {
-            throw new InvalidCurrencyException("Missing currency pair");
-        }
-
-        pathInfo = pathInfo.substring(1); //remove /
-        if(!pathInfo.matches("[A-Z]{6}")){
-            throw new InvalidCurrencyException("Invalid currency pair. Correct format <code1><code2>, for example USDEUR");
-        }
-
-        String baseCode = pathInfo.substring(0, 3);
-        String targetCode = pathInfo.substring(3);
-        return new CurrencyPair(baseCode, targetCode);
     }
 
 }

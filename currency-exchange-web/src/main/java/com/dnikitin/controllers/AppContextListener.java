@@ -1,4 +1,4 @@
-package com.dnikitin.servlets;
+package com.dnikitin.controllers;
 
 import com.dnikitin.services.ApplicationService;
 import jakarta.servlet.ServletContextEvent;
@@ -11,6 +11,10 @@ public class AppContextListener implements ServletContextListener {
     public void contextInitialized(ServletContextEvent sce) {
         ApplicationService.getInstance()
                 .initializeApplication();
+
+        AppContext context = new AppContext();
+
+        sce.getServletContext().setAttribute("appContext", context);
     }
     @Override
     public void contextDestroyed(ServletContextEvent sce) {

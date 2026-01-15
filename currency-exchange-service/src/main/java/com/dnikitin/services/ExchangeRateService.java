@@ -12,10 +12,10 @@ import java.util.Optional;
 
 
 public class ExchangeRateService {
-    private final Dao<CurrencyPair, ExchangeRateEntity> exchangeRateDao = ExchangeRateDao.getInstance();
-    private static final ExchangeRateService INSTANCE = new ExchangeRateService();
+    private final Dao<CurrencyPair, ExchangeRateEntity> exchangeRateDao;
 
-    private ExchangeRateService() {
+    public ExchangeRateService(Dao<CurrencyPair, ExchangeRateEntity> exchangeRateDao) {
+        this.exchangeRateDao = exchangeRateDao;
     }
 
     public List<ExchangeRateEntity> getExchangeRates() {
@@ -57,9 +57,5 @@ public class ExchangeRateService {
         } catch (DatabaseException e) {
             throw new ServiceUnavailableException(e.getMessage(), e);
         }
-    }
-
-    public static ExchangeRateService getInstance() {
-        return INSTANCE;
     }
 }

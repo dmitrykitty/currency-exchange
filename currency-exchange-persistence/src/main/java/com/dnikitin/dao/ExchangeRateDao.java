@@ -5,7 +5,6 @@ import com.dnikitin.entity.ExchangeRateEntity;
 import com.dnikitin.exceptions.DataIntegrityViolationException;
 import com.dnikitin.exceptions.DataNotFoundException;
 import com.dnikitin.exceptions.DatabaseException;
-import com.dnikitin.mappers.ExchangeRowMapper;
 import com.dnikitin.mappers.RowMapper;
 import com.dnikitin.vo.CurrencyPair;
 
@@ -16,7 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class ExchangeRateDao implements Dao<CurrencyPair, ExchangeRateEntity> {
-    private static final Dao<CurrencyPair, ExchangeRateEntity> INSTANCE = new ExchangeRateDao(new ExchangeRowMapper());
+
     private final RowMapper<ExchangeRateEntity> rowMapper;
 
     private static final String FIND_ALL_SQL = """
@@ -54,7 +53,7 @@ public class ExchangeRateDao implements Dao<CurrencyPair, ExchangeRateEntity> {
             """;
 
 
-    private ExchangeRateDao(RowMapper<ExchangeRateEntity> rowMapper) {
+    public ExchangeRateDao(RowMapper<ExchangeRateEntity> rowMapper) {
         this.rowMapper = rowMapper;
     }
 
@@ -177,9 +176,5 @@ public class ExchangeRateDao implements Dao<CurrencyPair, ExchangeRateEntity> {
             }
             throw new DatabaseException("Database error during saving exchange rate", e);
         }
-    }
-
-    public static Dao<CurrencyPair, ExchangeRateEntity> getInstance() {
-        return INSTANCE;
     }
 }
