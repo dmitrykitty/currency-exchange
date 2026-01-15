@@ -18,10 +18,26 @@ sign =A$
 POST http://localhost:8080/currencies
 Content-Type: application/x-www-form-urlencoded
 
-id = 0 &
+
 code = AUD &
 name = Australian dollar &
 sign = A$
+
+###
+POST http://localhost:8080/currencies
+Content-Type: application/x-www-form-urlencoded
+
+code = TES &
+name = test1 &
+sign = T
+
+###
+POST http://localhost:8080/currencies
+Content-Type: application/x-www-form-urlencoded
+
+code = TSE &
+name = test2 &
+sign = T
 
 ###
 GET http://localhost:8080/currency/BYN
@@ -39,8 +55,19 @@ GET http://localhost:8080/currency/EUR
 ###
 GET http://localhost:8080/exchangeRates
 
+###
+POST http://localhost:8080/exchangeRates
+Content-Type: application/x-www-form-urlencoded
 
+baseCurrencyCode = TES &
+targetCurrencyCode = TSE &
+rate = 1.2534
 
+###
+PATCH http://localhost:8080/exchangeRate/TESTSE
+Content-Type: application/x-www-form-urlencoded
+
+rate=1.535
 
 
 # exchangeRate by Codes

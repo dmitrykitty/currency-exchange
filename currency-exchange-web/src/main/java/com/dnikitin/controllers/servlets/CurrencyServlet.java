@@ -21,7 +21,7 @@ public class CurrencyServlet extends HttpServlet {
 
     @Override
     public void init() throws ServletException {
-        AppContext context = (AppContext) getServletContext().getAttribute(AppContext.class.getCanonicalName());
+        AppContext context = (AppContext) getServletContext().getAttribute(AppContext.class.getSimpleName());
 
         currencyService = context.getCurrencyService();
         jsonMapper = context.getJsonMapper();

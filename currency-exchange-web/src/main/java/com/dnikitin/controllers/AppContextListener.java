@@ -13,8 +13,7 @@ public class AppContextListener implements ServletContextListener {
                 .initializeApplication();
 
         AppContext context = new AppContext();
-
-        sce.getServletContext().setAttribute("appContext", context);
+        sce.getServletContext().setAttribute(AppContext.class.getSimpleName(), context);
     }
     @Override
     public void contextDestroyed(ServletContextEvent sce) {

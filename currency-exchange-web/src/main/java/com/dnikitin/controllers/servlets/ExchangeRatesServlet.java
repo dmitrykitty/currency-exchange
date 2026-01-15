@@ -26,7 +26,7 @@ public class ExchangeRatesServlet extends HttpServlet {
 
     @Override
     public void init(){
-        AppContext context = (AppContext) getServletContext().getAttribute(AppContext.class.getCanonicalName());
+        AppContext context = (AppContext) getServletContext().getAttribute(AppContext.class.getSimpleName());
 
         exchangeRateService = context.getExchangeRateService();
         currencyService = context.getCurrencyService();
