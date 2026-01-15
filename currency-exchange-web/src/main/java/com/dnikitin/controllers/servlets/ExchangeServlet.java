@@ -15,6 +15,10 @@ import tools.jackson.databind.json.JsonMapper;
 import java.io.IOException;
 import java.math.BigDecimal;
 
+/**
+ * REST endpoint for currency conversion calculations.
+ * Supports GET with query parameters 'from', 'to', and 'amount'.
+ */
 @WebServlet("/api/exchange")
 public class ExchangeServlet extends HttpServlet {
     private ExchangeService exchangeService;

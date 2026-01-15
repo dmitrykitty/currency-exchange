@@ -17,7 +17,10 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Map;
 
-
+/**
+ * REST endpoint for a specific currency pair's rate.
+ * Supports GET for retrieval and PATCH for updating the rate value.
+ */
 @WebServlet("/api/exchangeRate/*")
 public class ExchangeRateServlet extends HttpServlet {
     private ExchangeRateService exchangeRateService;

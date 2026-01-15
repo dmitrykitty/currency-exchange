@@ -10,7 +10,10 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
-
+/**
+ * Service class for managing exchange rates.
+ * Provides functionality to retrieve, save, and update direct exchange rates between currency pairs.
+ */
 public class ExchangeRateService {
     private final Dao<CurrencyPair, ExchangeRateEntity> exchangeRateDao;
 
@@ -18,6 +21,11 @@ public class ExchangeRateService {
         this.exchangeRateDao = exchangeRateDao;
     }
 
+    /**
+     * Retrieves all exchange rates currently stored in the database.
+     *
+     * @return A list of {@link ExchangeRateEntity} objects.
+     */
     public List<ExchangeRateEntity> getExchangeRates() {
         try {
 
@@ -47,6 +55,14 @@ public class ExchangeRateService {
         }
     }
 
+    /**
+     * Updates the rate value for an existing currency pair.
+     *
+     * @param currencyPair The pair identifying the rate to be updated.
+     * @param rate         The new rate value.
+     * @return The updated {@link ExchangeRateEntity}.
+     * @throws EntityNotFoundException If the currency pair does not exist.
+     */
     public ExchangeRateEntity updateExchangeRate(CurrencyPair currencyPair, BigDecimal rate) {
         try {
             ExchangeRateDao exchangeRateDaoNew = (ExchangeRateDao) exchangeRateDao;

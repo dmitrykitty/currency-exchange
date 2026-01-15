@@ -11,6 +11,15 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Optional;
 
+/**
+ * High-level service for currency conversion calculations.
+ * This service implements the logic for finding exchange rates through different paths:
+ * <ul>
+ * <li>Direct rate (A -> B)</li>
+ * <li>Reverse rate (B -> A)</li>
+ * <li>Cross rate via USD (A -> USD -> B)</li>
+ * </ul>
+ */
 public class ExchangeService {
     private final static String USD = "USD";
     private final static int SCALE = 6;
@@ -22,7 +31,15 @@ public class ExchangeService {
         this.exchangeRateDao = exchangeRateDao;
         this.currencyService = currencyService;
     }
-    
+
+    /**
+     * Performs a currency exchange calculation for a specific amount.
+     *
+     * @param currencyPair The pair defining the base and target currencies.
+     * @param amount       The amount of base currency to be converted.
+     * @return An {@link com.dnikitin.dto.ExchangeValue} containing the conversion details.
+     * @throws com.dnikitin.exceptions.EntityNotFoundException If no exchange path (direct, reverse, or cross) is found.
+     */
     public ExchangeValue exchange(CurrencyPair currencyPair, BigDecimal amount){
         BigDecimal exchangeRate = findExchangeRate(currencyPair);
 
@@ -39,7 +56,11 @@ public class ExchangeService {
                 .convertedAmount(convertedAmount)
                 .build();
     }
-    
+
+    /**
+     * Internal logic to determine the exchange rate.
+     * Uses a scale of 6 for rate calculations and {@link java.math.RoundingMode#HALF_UP}.
+     */
     private BigDecimal findExchangeRate(CurrencyPair currencyPair){
         
         Optional<ExchangeRateEntity> maybeRate = exchangeRateDao.findById(currencyPair);
@@ -70,6 +91,10 @@ public class ExchangeService {
         throw new EntityNotFoundException("No exchange path for " + currencyPair);
     }
 
+    /**
+     * Calculates the final converted amount.
+     * Rounds the result to 2 decimal places using {@link java.math.RoundingMode#HALF_UP}.
+     */
     private BigDecimal getConvertedAmount(BigDecimal rate, BigDecimal amount){
         return rate.multiply(amount).setScale(2, RoundingMode.HALF_UP);
     }

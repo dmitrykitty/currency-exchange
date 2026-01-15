@@ -11,6 +11,10 @@ import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+/**
+ * Utility class for managing the HikariCP connection pool for the SQLite database.
+ * Ensures efficient connection reuse and provides mandatory PRAGMA configurations for SQLite.
+ */
 @UtilityClass
 public class DataSourceHikari {
 
@@ -51,6 +55,12 @@ public class DataSourceHikari {
         return path;
     }
 
+    /**
+     * Obtains a connection from the pool.
+     *
+     * @return A {@link java.sql.Connection} instance.
+     * @throws java.sql.SQLException If the pool is exhausted or database is unreachable.
+     */
     public Connection getConnection() throws SQLException {
         return DS.getConnection();
     }

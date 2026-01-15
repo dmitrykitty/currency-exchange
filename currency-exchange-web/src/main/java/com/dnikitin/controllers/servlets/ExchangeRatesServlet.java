@@ -16,6 +16,10 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
 
+/**
+ * REST endpoint for managing the list of exchange rates.
+ * Supports GET for retrieval and POST for adding new rate records.
+ */
 @WebServlet("/api/exchangeRates")
 public class ExchangeRatesServlet extends HttpServlet {
     private ExchangeRateService exchangeRateService;

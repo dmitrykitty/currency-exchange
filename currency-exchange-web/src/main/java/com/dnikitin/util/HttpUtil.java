@@ -13,8 +13,18 @@ import java.util.Map;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toMap;
 
+/**
+ * Utility class for handling common HTTP request processing tasks.
+ * Includes methods for parsing request bodies and validating path parameters.
+ */
 @UtilityClass
 public class HttpUtil {
+    /**
+     * Parses the request body from x-www-form-urlencoded format into a Map.
+     *
+     * @param reader The BufferedReader containing the request body.
+     * @return A map of decoded key-value pairs.
+     */
     public Map<String, String> prepareRequestParams(BufferedReader reader) {
         String body = reader.lines().collect(joining());
         if (body.isEmpty()) {
@@ -32,6 +42,13 @@ public class HttpUtil {
         return URLDecoder.decode(value, StandardCharsets.UTF_8);
     }
 
+    /**
+     * Extracts and validates a 6-character currency pair from path information.
+     *
+     * @param pathInfo The path string from the request.
+     * @return A {@link com.dnikitin.vo.CurrencyPair} object.
+     * @throws com.dnikitin.exceptions.InvalidCurrencyException if the format is invalid.
+     */
     public CurrencyPair prepareCurrencyPair(String pathInfo) {
         if (pathInfo == null || pathInfo.equals("/")) {
             throw new InvalidCurrencyException("Missing currency pair");

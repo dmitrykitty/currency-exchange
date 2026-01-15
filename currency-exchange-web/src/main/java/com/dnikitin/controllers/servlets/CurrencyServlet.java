@@ -14,6 +14,10 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
+/**
+ * REST endpoint for individual currency data.
+ * Supports GET for retrieving a specific currency by its code in the path (e.g., /currency/USD).
+ */
 @WebServlet("/api/currency/*")
 public class CurrencyServlet extends HttpServlet {
     private CurrencyService currencyService;

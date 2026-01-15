@@ -9,11 +9,20 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
+/**
+ * Global filter for handling exceptions and setting standard response headers.
+ * Maps various runtime exceptions to appropriate HTTP status codes and
+ * returns error messages in JSON format.
+ */
 @WebFilter("/api/*")
 public class ExceptionFilter implements Filter {
 
     private final JsonMapper jsonMapper = Json.getInstance();
 
+    /**
+     * Processes the request and captures any thrown exceptions to return
+     * a structured JSON error response.
+     */
     @Override
     public void doFilter(ServletRequest request,
                          ServletResponse response,

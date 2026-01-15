@@ -14,6 +14,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Data Access Object for handling {@link com.dnikitin.entity.ExchangeRateEntity} persistence.
+ * Supports retrieval and updating of currency exchange rates.
+ */
 public class ExchangeRateDao implements Dao<CurrencyPair, ExchangeRateEntity> {
 
     private final RowMapper<ExchangeRateEntity> rowMapper;
@@ -98,6 +102,16 @@ public class ExchangeRateDao implements Dao<CurrencyPair, ExchangeRateEntity> {
         }
     }
 
+    /**
+     * Updates the rate for an existing currency pair.
+     * This operation is performed within a transaction to ensure data consistency.
+     *
+     * @param currencies The currency pair identifying the record to update.
+     * @param rate       The new exchange rate value.
+     * @return The updated exchange rate entity.
+     * @throws DataNotFoundException If the pair does not exist.
+     * @throws DatabaseException     If a SQL error occurs during the transaction.
+     */
     public ExchangeRateEntity update(CurrencyPair currencies, BigDecimal rate) {
         try (Connection connection = DataSourceHikari.getConnection()) {
             try (PreparedStatement preparedStatementUpdate = connection.prepareStatement(UPDATE_SQL);

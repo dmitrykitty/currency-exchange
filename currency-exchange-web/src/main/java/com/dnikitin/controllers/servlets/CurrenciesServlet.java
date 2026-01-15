@@ -14,6 +14,10 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
+/**
+ * REST endpoint for managing the list of currencies.
+ * Supports GET for retrieval and POST for adding new currencies.
+ */
 @WebServlet("/api/currencies")
 public class CurrenciesServlet extends HttpServlet {
     private CurrencyService currencyService;

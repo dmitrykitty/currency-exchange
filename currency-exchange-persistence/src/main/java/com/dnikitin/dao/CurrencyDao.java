@@ -4,7 +4,6 @@ import com.dnikitin.config.DataSourceHikari;
 import com.dnikitin.entity.CurrencyEntity;
 import com.dnikitin.exceptions.DatabaseException;
 import com.dnikitin.exceptions.DataIntegrityViolationException;
-import com.dnikitin.mappers.CurrencyMapper;
 import com.dnikitin.mappers.RowMapper;
 
 import java.sql.*;
@@ -12,6 +11,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Data Access Object for handling {@link com.dnikitin.entity.CurrencyEntity} persistence.
+ * Managed using SQLite via JDBC.
+ */
 public class CurrencyDao implements Dao<String, CurrencyEntity> {
     private final RowMapper<CurrencyEntity> rowMapper;
 
