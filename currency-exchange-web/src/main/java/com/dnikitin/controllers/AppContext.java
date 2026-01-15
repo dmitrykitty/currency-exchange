@@ -6,6 +6,7 @@ import com.dnikitin.mappers.CurrencyMapper;
 import com.dnikitin.mappers.ExchangeRowMapper;
 import com.dnikitin.services.CurrencyService;
 import com.dnikitin.services.ExchangeRateService;
+import com.dnikitin.services.ExchangeService;
 import com.dnikitin.util.Json;
 import lombok.Getter;
 import tools.jackson.databind.json.JsonMapper;
@@ -16,6 +17,7 @@ public class AppContext {
     private final ExchangeRateDao exchangeRateDao;
     private final CurrencyService currencyService;
     private final ExchangeRateService exchangeRateService;
+    private final ExchangeService exchangeService;
     private final JsonMapper jsonMapper;
 
     public AppContext() {
@@ -27,6 +29,7 @@ public class AppContext {
 
         currencyService = new CurrencyService(currencyDao);
         exchangeRateService = new ExchangeRateService(exchangeRateDao);
+        exchangeService = new ExchangeService(exchangeRateDao, currencyService);
 
         jsonMapper = Json.getInstance();
     }

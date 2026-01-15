@@ -82,3 +82,6 @@ GET http://localhost:8080/exchangeRate/USDR
 
 ###
 GET http://localhost:8080/exchangeRate/
+
+###
+GET localhost:8080/exchange?from=TES&to=TSE&amount=10

@@ -2,7 +2,7 @@ package com.dnikitin.controllers.servlets;
 
 import com.dnikitin.controllers.AppContext;
 import com.dnikitin.entity.CurrencyEntity;
-import com.dnikitin.exceptions.InvalidInputException;
+import com.dnikitin.exceptions.InvalidInputBodyException;
 import com.dnikitin.services.CurrencyService;
 import jakarta.servlet.ServletException;
 import tools.jackson.databind.json.JsonMapper;
@@ -44,7 +44,7 @@ public class CurrenciesServlet extends HttpServlet {
         String sign = req.getParameter("sign");
 
         if (name == null || code == null || sign == null) {
-            throw new InvalidInputException("Missing required fields: code, name, or sign");
+            throw new InvalidInputBodyException("Missing required fields: code, name, or sign");
         }
 
         CurrencyEntity currencyToSave = CurrencyEntity.builder()
@@ -56,8 +56,6 @@ public class CurrenciesServlet extends HttpServlet {
 
         CurrencyEntity currencyEntity = currencyService.saveCurrency(currencyToSave);
 
-        resp.setContentType("application/json");
-        resp.setCharacterEncoding("UTF-8");
         resp.setStatus(HttpServletResponse.SC_CREATED);
 
         jsonMapper.writeValue(resp.getWriter(), currencyEntity);

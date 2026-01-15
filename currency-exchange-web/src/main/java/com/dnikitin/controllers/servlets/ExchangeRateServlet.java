@@ -49,8 +49,7 @@ public class ExchangeRateServlet extends HttpServlet {
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");
 
-        ExchangeRateEntity exchangeRateByCodes = exchangeRateService.getExchangeRateByCodes(
-                currencyPair.baseCurrency(), currencyPair.targetCurrency());
+        ExchangeRateEntity exchangeRateByCodes = exchangeRateService.getExchangeRateByCodes(currencyPair);
 
         jsonMapper.writeValue(resp.getWriter(), exchangeRateByCodes);
     }
@@ -67,9 +66,6 @@ public class ExchangeRateServlet extends HttpServlet {
         BigDecimal rateDecimal = new BigDecimal(rate);
 
         ExchangeRateEntity exchangeRateEntity = exchangeRateService.updateExchangeRate(currencyPair, rateDecimal);
-
-        resp.setContentType("application/json");
-        resp.setCharacterEncoding("UTF-8");
 
         jsonMapper.writeValue(resp.getWriter(), exchangeRateEntity);
     }

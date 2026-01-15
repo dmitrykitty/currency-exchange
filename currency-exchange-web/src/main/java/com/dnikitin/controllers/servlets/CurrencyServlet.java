@@ -39,9 +39,6 @@ public class CurrencyServlet extends HttpServlet {
             throw new InvalidCurrencyException("Invalid currency code. Correct format <code1>, for example USD");
         }
 
-        resp.setContentType("application/json");
-        resp.setCharacterEncoding("UTF-8");
-
         CurrencyEntity currencyByCode = currencyService.getCurrencyByCode(pathInfo);
         jsonMapper.writeValue(resp.getWriter(), currencyByCode);
     }

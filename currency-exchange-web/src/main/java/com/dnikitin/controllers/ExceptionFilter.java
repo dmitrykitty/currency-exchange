@@ -22,6 +22,9 @@ public class ExceptionFilter implements Filter {
         HttpServletResponse httpResponse = (HttpServletResponse) response;
 
         try {
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+
             filterChain.doFilter(request, response);
         } catch (Throwable e) {
             Throwable cause = (e instanceof ServletException) ? e.getCause() : e;
@@ -31,7 +34,7 @@ public class ExceptionFilter implements Filter {
             }
             // Maps exceptions to HTTP error responses
             switch (cause) {
-                case InvalidCurrencyException _, InvalidInputException _ ->
+                case InvalidCurrencyException _, InvalidInputBodyException _ ->
                         sendError(httpResponse, HttpServletResponse.SC_BAD_REQUEST, cause.getMessage());
                 case EntityNotFoundException _ ->
                         sendError(httpResponse, HttpServletResponse.SC_NOT_FOUND, cause.getMessage());
