@@ -2,7 +2,7 @@ package com.dnikitin.controllers.servlets;
 
 import com.dnikitin.controllers.AppContext;
 import com.dnikitin.dto.ExchangeRateDto;
-import com.dnikitin.exceptions.InvalidCurrencyException;
+import com.dnikitin.exceptions.InvalidParamsException;
 import com.dnikitin.services.ExchangeRateService;
 import com.dnikitin.util.HttpUtil;
 import com.dnikitin.vo.CurrencyPair;
@@ -62,7 +62,7 @@ public class ExchangeRateServlet extends HttpServlet {
         Map<String, String> params = HttpUtil.prepareRequestParams(req.getReader());
         String rate = params.get("rate");
         if (rate == null) {
-            throw new InvalidCurrencyException("Missing required fields: rate");
+            throw new InvalidParamsException("Missing required fields: rate");
         }
 
         String pathInfo = req.getPathInfo();

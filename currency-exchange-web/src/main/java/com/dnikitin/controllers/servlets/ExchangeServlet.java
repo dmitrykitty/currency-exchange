@@ -1,8 +1,9 @@
 package com.dnikitin.controllers.servlets;
 
 import com.dnikitin.controllers.AppContext;
-import com.dnikitin.exceptions.InvalidCurrencyException;
+import com.dnikitin.exceptions.InvalidParamsException;
 import com.dnikitin.services.ExchangeService;
+import com.dnikitin.util.HttpUtil;
 import com.dnikitin.vo.CurrencyPair;
 import com.dnikitin.dto.ExchangeValueDto;
 
@@ -39,8 +40,11 @@ public class ExchangeServlet extends HttpServlet {
         String amount = req.getParameter("amount");
 
         if(from == null || to == null || amount == null) {
-            throw new InvalidCurrencyException("Missing required fields: from, to, amount");
+            throw new InvalidParamsException("Missing required fields: from, to, amount");
         }
+
+        HttpUtil.validateCode(from);
+        HttpUtil.validateCode(to);
 
         BigDecimal amountDecimal = new BigDecimal(amount);
         ExchangeValueDto exchangeValue = exchangeService.exchange(new CurrencyPair(from, to), amountDecimal);

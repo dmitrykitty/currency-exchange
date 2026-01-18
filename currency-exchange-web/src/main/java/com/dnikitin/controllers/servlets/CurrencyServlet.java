@@ -2,9 +2,10 @@ package com.dnikitin.controllers.servlets;
 
 import com.dnikitin.controllers.AppContext;
 import com.dnikitin.dto.CurrencyDto;
-import com.dnikitin.exceptions.InvalidCurrencyException;
+import com.dnikitin.exceptions.InvalidParamsException;
 import com.dnikitin.services.CurrencyService;
 
+import com.dnikitin.util.HttpUtil;
 import tools.jackson.databind.json.JsonMapper;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -34,13 +35,11 @@ public class CurrencyServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String pathInfo = req.getPathInfo();
         if (pathInfo == null || pathInfo.equals("/")) {
-            throw new InvalidCurrencyException("Missing currency code");
+            throw new InvalidParamsException("Missing currency code");
         }
 
         pathInfo = pathInfo.substring(1); //remove /
-        if (!pathInfo.matches("[A-Z]{3}")) {
-            throw new InvalidCurrencyException("Invalid currency code. Correct format <code1>, for example USD");
-        }
+        HttpUtil.validateCode(pathInfo);
 
         CurrencyDto currencyByCode = currencyService.getCurrencyByCode(pathInfo);
         jsonMapper.writeValue(resp.getWriter(), currencyByCode);

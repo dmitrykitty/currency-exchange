@@ -1,6 +1,6 @@
 package com.dnikitin.util;
 
-import com.dnikitin.exceptions.InvalidCurrencyException;
+import com.dnikitin.exceptions.InvalidParamsException;
 import com.dnikitin.vo.CurrencyPair;
 import lombok.experimental.UtilityClass;
 
@@ -34,7 +34,7 @@ public class HttpUtil {
                 .map(pair -> pair.split("=", 2))
                 .collect(toMap(pair -> decode(pair[0]),
                         pair -> pair.length == 1 ? "" : decode(pair[1]),
-                        (existingValue, newValue) -> newValue));
+                        (_, newValue) -> newValue));
 
     }
 
@@ -47,21 +47,45 @@ public class HttpUtil {
      *
      * @param pathInfo The path string from the request.
      * @return A {@link com.dnikitin.vo.CurrencyPair} object.
-     * @throws com.dnikitin.exceptions.InvalidCurrencyException if the format is invalid.
+     * @throws InvalidParamsException if the format is invalid.
      */
     public CurrencyPair prepareCurrencyPair(String pathInfo) {
         if (pathInfo == null || pathInfo.equals("/")) {
-            throw new InvalidCurrencyException("Missing currency pair");
+            throw new InvalidParamsException("Missing currency pair");
         }
 
         pathInfo = pathInfo.substring(1); //remove /
-        if (!pathInfo.matches("[A-Z]{6}")) {
-            throw new InvalidCurrencyException("Invalid currency pair. Correct format <code1><code2>, for example USDEUR");
-        }
+        validateCurrencyPair(pathInfo);
 
         String baseCode = pathInfo.substring(0, 3);
         String targetCode = pathInfo.substring(3);
         return new CurrencyPair(baseCode, targetCode);
+    }
+
+    public void validateCurrencyPair(String pair) {
+        if (!pair.matches("[A-Z]{6}")) {
+            throw new InvalidParamsException("Invalid currency pair. Correct format <code1><code2>, for example USDEUR");
+        }
+    }
+
+    public void validateCode(String code) {
+        if (!code.matches("[A-Z]{3}")) {
+            throw new InvalidParamsException("Invalid currency code. Correct format USD.");
+        }
+    }
+
+    public void validateName(String name) {
+        if (!name.matches("[a-zA-Z -]{4,32}")) {
+            throw new InvalidParamsException(
+                    "Invalid currency name. Correct name is built with [a-zA-Z -] and has name from 4 to 32 symbols.");
+        }
+    }
+
+    public void validateSign(String sign) {
+        if (!sign.matches("[.]{0,4}")) {
+            throw new InvalidParamsException(
+                    "Invalid currency sign. Max length is 4.");
+        }
     }
 
 

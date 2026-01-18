@@ -2,8 +2,9 @@ package com.dnikitin.controllers.servlets;
 
 import com.dnikitin.controllers.AppContext;
 import com.dnikitin.dto.CurrencyDto;
-import com.dnikitin.exceptions.InvalidInputBodyException;
+import com.dnikitin.exceptions.InvalidParamsException;
 import com.dnikitin.services.CurrencyService;
+import com.dnikitin.util.HttpUtil;
 
 import tools.jackson.databind.json.JsonMapper;
 import jakarta.servlet.annotation.WebServlet;
@@ -34,9 +35,6 @@ public class CurrenciesServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         List<CurrencyDto> currencies = currencyService.getCurrencies();
 
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-
         jsonMapper.writeValue(response.getWriter(), currencies);
 
     }
@@ -48,8 +46,12 @@ public class CurrenciesServlet extends HttpServlet {
         String sign = req.getParameter("sign");
 
         if (name == null || code == null || sign == null) {
-            throw new InvalidInputBodyException("Missing required fields: code, name, or sign");
+            throw new InvalidParamsException("Missing required fields: code, name, or sign");
         }
+
+        HttpUtil.validateName(name);
+        HttpUtil.validateCode(code);
+        HttpUtil.validateSign(sign);
 
         CurrencyDto currencyToSave = CurrencyDto.builder()
                 .id(0)
@@ -59,7 +61,6 @@ public class CurrenciesServlet extends HttpServlet {
                 .build();
 
         CurrencyDto savedCurrency = currencyService.saveCurrency(currencyToSave);
-
         resp.setStatus(HttpServletResponse.SC_CREATED);
 
         jsonMapper.writeValue(resp.getWriter(), savedCurrency);
