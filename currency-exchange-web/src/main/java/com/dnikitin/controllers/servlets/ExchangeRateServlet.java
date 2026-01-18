@@ -49,10 +49,6 @@ public class ExchangeRateServlet extends HttpServlet {
         String pathInfo = req.getPathInfo();
         CurrencyPair currencyPair = HttpUtil.prepareCurrencyPair(pathInfo);
 
-
-        resp.setContentType("application/json");
-        resp.setCharacterEncoding("UTF-8");
-
         ExchangeRateDto exchangeRateByCodes = exchangeRateService.getExchangeRateByCodes(currencyPair);
 
         jsonMapper.writeValue(resp.getWriter(), exchangeRateByCodes);
@@ -66,8 +62,9 @@ public class ExchangeRateServlet extends HttpServlet {
         }
 
         String pathInfo = req.getPathInfo();
+
         CurrencyPair currencyPair = HttpUtil.prepareCurrencyPair(pathInfo);
-        BigDecimal rateDecimal = new BigDecimal(rate);
+        BigDecimal rateDecimal = HttpUtil.getBigDecimal(rate);
 
         ExchangeRateDto exchangeRate = exchangeRateService.updateExchangeRate(currencyPair, rateDecimal);
 

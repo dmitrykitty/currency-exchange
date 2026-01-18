@@ -55,10 +55,9 @@ public class ExchangeRatesServlet extends HttpServlet {
             throw new InvalidParamsException("Missing required fields: baseCurrencyCode, targetCurrencyCode, rate");
         }
 
-        HttpUtil.validateCode(baseCurrencyCode);
-        HttpUtil.validateCode(targetCurrencyCode);
+        HttpUtil.validateCodes(baseCurrencyCode, targetCurrencyCode);
+        BigDecimal rateDecimal = HttpUtil.getBigDecimal(rate);
 
-        BigDecimal rateDecimal = new BigDecimal(rate);
         CurrencyDto baseCurrencyByCode = currencyService.getCurrencyByCode(baseCurrencyCode);
         CurrencyDto targetCurrencyByCode = currencyService.getCurrencyByCode(targetCurrencyCode);
 

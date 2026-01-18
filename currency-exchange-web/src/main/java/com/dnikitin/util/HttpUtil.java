@@ -5,6 +5,7 @@ import com.dnikitin.vo.CurrencyPair;
 import lombok.experimental.UtilityClass;
 
 import java.io.BufferedReader;
+import java.math.BigDecimal;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
@@ -59,6 +60,10 @@ public class HttpUtil {
 
         String baseCode = pathInfo.substring(0, 3);
         String targetCode = pathInfo.substring(3);
+
+        if (baseCode.equals(targetCode)) {
+            throw new InvalidParamsException("Currencies codes should be different.");
+        }
         return new CurrencyPair(baseCode, targetCode);
     }
 
@@ -82,9 +87,26 @@ public class HttpUtil {
     }
 
     public void validateSign(String sign) {
-        if (!sign.matches("[.]{0,4}")) {
+        if (!sign.matches(".{0,4}")) {
             throw new InvalidParamsException(
                     "Invalid currency sign. Max length is 4.");
+        }
+    }
+
+    public BigDecimal getBigDecimal(String bd) {
+        try {
+            return new BigDecimal(bd);
+        } catch (NumberFormatException e) {
+            throw new InvalidParamsException("Invalid rate or amount format. Should be number.");
+        }
+    }
+
+    public void validateCodes(String code1, String code2) {
+        validateCode(code1);
+        validateCode(code2);
+
+        if (code1.equals(code2)) {
+            throw new InvalidParamsException("Currencies codes should be different.");
         }
     }
 

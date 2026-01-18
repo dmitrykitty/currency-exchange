@@ -43,10 +43,9 @@ public class ExchangeServlet extends HttpServlet {
             throw new InvalidParamsException("Missing required fields: from, to, amount");
         }
 
-        HttpUtil.validateCode(from);
-        HttpUtil.validateCode(to);
+        HttpUtil.validateCodes(from, to);
+        BigDecimal amountDecimal = HttpUtil.getBigDecimal(amount);
 
-        BigDecimal amountDecimal = new BigDecimal(amount);
         ExchangeValueDto exchangeValue = exchangeService.exchange(new CurrencyPair(from, to), amountDecimal);
 
         jsonMapper.writeValue(resp.getWriter(), exchangeValue);
