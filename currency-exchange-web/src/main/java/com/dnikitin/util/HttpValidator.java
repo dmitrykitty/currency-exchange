@@ -1,7 +1,7 @@
 package com.dnikitin.util;
 
+import com.dnikitin.dto.CurrencyPairDto;
 import com.dnikitin.exceptions.InvalidParamsException;
-import com.dnikitin.vo.CurrencyPair;
 import lombok.experimental.UtilityClass;
 
 import java.io.BufferedReader;
@@ -46,7 +46,7 @@ public class HttpValidator {
      * @return A {@link com.dnikitin.vo.CurrencyPair} object.
      * @throws InvalidParamsException if the format is invalid.
      */
-    public CurrencyPair getValidCurrencyPair(String pathInfo) {
+    public CurrencyPairDto getValidCurrencyPair(String pathInfo) {
         if (pathInfo == null || pathInfo.equals("/")) {
             throw new InvalidParamsException("Missing currency pair");
         }
@@ -60,10 +60,10 @@ public class HttpValidator {
         if (baseCode.equals(targetCode)) {
             throw new InvalidParamsException("Currencies codes should be different.");
         }
-        return new CurrencyPair(baseCode, targetCode);
+        return new CurrencyPairDto(baseCode, targetCode);
     }
 
-    public CurrencyPair getValidCurrencyPair(String code1, String code2) {
+    public CurrencyPairDto getValidCurrencyPair(String code1, String code2) {
         String validCode1 = getValidCode(code1);
         String validCode2 = getValidCode(code2);
 
@@ -71,7 +71,7 @@ public class HttpValidator {
             throw new InvalidParamsException("Currencies codes should be different.");
         }
 
-        return new CurrencyPair(validCode1, validCode2);
+        return new CurrencyPairDto(validCode1, validCode2);
     }
 
     public String getValidName(String name){

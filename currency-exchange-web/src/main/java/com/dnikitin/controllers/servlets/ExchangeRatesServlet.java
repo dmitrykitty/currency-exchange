@@ -2,13 +2,13 @@ package com.dnikitin.controllers.servlets;
 
 import com.dnikitin.controllers.AppContext;
 import com.dnikitin.dto.CurrencyDto;
+import com.dnikitin.dto.CurrencyPairDto;
 import com.dnikitin.dto.ExchangeRateDto;
 import com.dnikitin.exceptions.InvalidParamsException;
 import com.dnikitin.services.CurrencyService;
 import com.dnikitin.services.ExchangeRateService;
-
 import com.dnikitin.util.HttpValidator;
-import com.dnikitin.vo.CurrencyPair;
+
 import tools.jackson.databind.json.JsonMapper;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -30,7 +30,7 @@ public class ExchangeRatesServlet extends HttpServlet {
     private JsonMapper jsonMapper;
 
     @Override
-    public void init(){
+    public void init() {
         AppContext context = (AppContext) getServletContext().getAttribute(AppContext.class.getSimpleName());
 
         exchangeRateService = context.getExchangeRateService();
@@ -39,11 +39,11 @@ public class ExchangeRatesServlet extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws  IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 
         List<ExchangeRateDto> exchangeRates = exchangeRateService.getExchangeRates();
 
-        jsonMapper.writeValue(resp.getWriter(),exchangeRates);
+        jsonMapper.writeValue(resp.getWriter(), exchangeRates);
     }
 
     @Override
@@ -52,15 +52,15 @@ public class ExchangeRatesServlet extends HttpServlet {
         String targetCurrencyCode = req.getParameter("targetCurrencyCode");
         String rate = req.getParameter("rate");
 
-        if(baseCurrencyCode == null || targetCurrencyCode == null || rate == null){
+        if (baseCurrencyCode == null || targetCurrencyCode == null || rate == null) {
             throw new InvalidParamsException("Missing required fields: baseCurrencyCode, targetCurrencyCode, rate");
         }
 
-        CurrencyPair validCodePair = HttpValidator.getValidCurrencyPair(baseCurrencyCode, targetCurrencyCode);
+        CurrencyPairDto validCurrencyPairDto = HttpValidator.getValidCurrencyPair(baseCurrencyCode, targetCurrencyCode);
         BigDecimal rateDecimal = HttpValidator.getBigDecimal(rate);
 
-        CurrencyDto baseCurrencyByCode = currencyService.getCurrencyByCode(validCodePair.baseCurrency());
-        CurrencyDto targetCurrencyByCode = currencyService.getCurrencyByCode(validCodePair.targetCurrency());
+        CurrencyDto baseCurrencyByCode = currencyService.getCurrencyByCode(validCurrencyPairDto.baseCurrency());
+        CurrencyDto targetCurrencyByCode = currencyService.getCurrencyByCode(validCurrencyPairDto.targetCurrency());
 
         ExchangeRateDto exchangeRateToSave = ExchangeRateDto.builder()
                 .id(0)
@@ -73,6 +73,6 @@ public class ExchangeRatesServlet extends HttpServlet {
 
         resp.setStatus(HttpServletResponse.SC_CREATED);
 
-        jsonMapper.writeValue(resp.getWriter(),savedExchangeRate);
+        jsonMapper.writeValue(resp.getWriter(), savedExchangeRate);
     }
 }

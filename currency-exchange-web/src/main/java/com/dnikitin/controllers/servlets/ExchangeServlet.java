@@ -1,10 +1,10 @@
 package com.dnikitin.controllers.servlets;
 
 import com.dnikitin.controllers.AppContext;
+import com.dnikitin.dto.CurrencyPairDto;
 import com.dnikitin.exceptions.InvalidParamsException;
 import com.dnikitin.services.ExchangeService;
 import com.dnikitin.util.HttpValidator;
-import com.dnikitin.vo.CurrencyPair;
 import com.dnikitin.dto.ExchangeValueDto;
 
 import jakarta.servlet.annotation.WebServlet;
@@ -26,7 +26,7 @@ public class ExchangeServlet extends HttpServlet {
     private JsonMapper jsonMapper;
 
     @Override
-    public void init(){
+    public void init() {
         AppContext context = (AppContext) getServletContext().getAttribute(AppContext.class.getSimpleName());
 
         exchangeService = context.getExchangeService();
@@ -39,14 +39,14 @@ public class ExchangeServlet extends HttpServlet {
         String to = req.getParameter("to");
         String amount = req.getParameter("amount");
 
-        if(from == null || to == null || amount == null) {
+        if (from == null || to == null || amount == null) {
             throw new InvalidParamsException("Missing required fields: from, to, amount");
         }
 
-        CurrencyPair validCodePair = HttpValidator.getValidCurrencyPair(from, to);
+        CurrencyPairDto validCurrencyPairDto = HttpValidator.getValidCurrencyPair(from, to);
         BigDecimal amountDecimal = HttpValidator.getBigDecimal(amount);
 
-        ExchangeValueDto exchangeValue = exchangeService.exchange(validCodePair, amountDecimal);
+        ExchangeValueDto exchangeValue = exchangeService.exchange(validCurrencyPairDto, amountDecimal);
 
         jsonMapper.writeValue(resp.getWriter(), exchangeValue);
     }

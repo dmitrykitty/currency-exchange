@@ -1,11 +1,11 @@
 package com.dnikitin.controllers.servlets;
 
 import com.dnikitin.controllers.AppContext;
+import com.dnikitin.dto.CurrencyPairDto;
 import com.dnikitin.dto.ExchangeRateDto;
 import com.dnikitin.exceptions.InvalidParamsException;
 import com.dnikitin.services.ExchangeRateService;
 import com.dnikitin.util.HttpValidator;
-import com.dnikitin.vo.CurrencyPair;
 
 import tools.jackson.databind.json.JsonMapper;
 import jakarta.servlet.ServletException;
@@ -47,9 +47,9 @@ public class ExchangeRateServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String pathInfo = req.getPathInfo();
-        CurrencyPair currencyPair = HttpValidator.getValidCurrencyPair(pathInfo);
+        CurrencyPairDto validCurrencyPairDto = HttpValidator.getValidCurrencyPair(pathInfo);
 
-        ExchangeRateDto exchangeRateByCodes = exchangeRateService.getExchangeRateByCodes(currencyPair);
+        ExchangeRateDto exchangeRateByCodes = exchangeRateService.getExchangeRateByCodes(validCurrencyPairDto);
 
         jsonMapper.writeValue(resp.getWriter(), exchangeRateByCodes);
     }
@@ -64,10 +64,10 @@ public class ExchangeRateServlet extends HttpServlet {
 
         String pathInfo = req.getPathInfo();
 
-        CurrencyPair currencyPair = HttpValidator.getValidCurrencyPair(pathInfo);
+        CurrencyPairDto validCurrencyPairDto = HttpValidator.getValidCurrencyPair(pathInfo);
         BigDecimal rateDecimal = HttpValidator.getBigDecimal(rate);
 
-        ExchangeRateDto exchangeRate = exchangeRateService.updateExchangeRate(currencyPair, rateDecimal);
+        ExchangeRateDto exchangeRate = exchangeRateService.updateExchangeRate(validCurrencyPairDto, rateDecimal);
 
         jsonMapper.writeValue(resp.getWriter(), exchangeRate);
     }

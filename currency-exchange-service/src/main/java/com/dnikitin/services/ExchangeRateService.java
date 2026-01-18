@@ -2,6 +2,7 @@ package com.dnikitin.services;
 
 import com.dnikitin.dao.Dao;
 import com.dnikitin.dao.ExchangeRateDao;
+import com.dnikitin.dto.CurrencyPairDto;
 import com.dnikitin.dto.ExchangeRateDto;
 import com.dnikitin.entity.ExchangeRateEntity;
 import com.dnikitin.exceptions.*;
@@ -41,8 +42,9 @@ public class ExchangeRateService {
         }
     }
 
-    public ExchangeRateDto getExchangeRateByCodes(CurrencyPair currencyPair) {
+    public ExchangeRateDto getExchangeRateByCodes(CurrencyPairDto currencyPairDto) {
         try {
+            CurrencyPair currencyPair = new CurrencyPair(currencyPairDto.baseCurrency(), currencyPairDto.targetCurrency());
             Optional<ExchangeRateEntity> maybeExchangeRate = exchangeRateDao.findById(currencyPair);
             ExchangeRateEntity exchangeRateEntity = maybeExchangeRate.orElseThrow(() ->
                     new EntityNotFoundException("No exchange rate for currency pair " + currencyPair + " found"));
@@ -67,13 +69,15 @@ public class ExchangeRateService {
     /**
      * Updates the rate value for an existing currency pair.
      *
-     * @param currencyPair The pair identifying the rate to be updated.
+     * @param currencyPairDto The pair identifying the rate to be updated.
      * @param rate         The new rate value.
      * @return The updated {@link ExchangeRateEntity}.
      * @throws EntityNotFoundException If the currency pair does not exist.
      */
-    public ExchangeRateDto updateExchangeRate(CurrencyPair currencyPair, BigDecimal rate) {
+    public ExchangeRateDto updateExchangeRate(CurrencyPairDto currencyPairDto, BigDecimal rate) {
         try {
+            CurrencyPair currencyPair = new CurrencyPair(currencyPairDto.baseCurrency(), currencyPairDto.targetCurrency());
+
             ExchangeRateDao exchangeRateDaoNew = (ExchangeRateDao) exchangeRateDao;
             ExchangeRateEntity updatedEntity = exchangeRateDaoNew.update(currencyPair, rate);
             return exchangeRateDtoMapper.mapToDto(updatedEntity);
