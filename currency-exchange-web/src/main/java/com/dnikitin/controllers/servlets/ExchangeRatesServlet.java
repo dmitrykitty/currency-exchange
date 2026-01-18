@@ -7,7 +7,8 @@ import com.dnikitin.exceptions.InvalidParamsException;
 import com.dnikitin.services.CurrencyService;
 import com.dnikitin.services.ExchangeRateService;
 
-import com.dnikitin.util.HttpUtil;
+import com.dnikitin.util.HttpValidator;
+import com.dnikitin.vo.CurrencyPair;
 import tools.jackson.databind.json.JsonMapper;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -55,11 +56,11 @@ public class ExchangeRatesServlet extends HttpServlet {
             throw new InvalidParamsException("Missing required fields: baseCurrencyCode, targetCurrencyCode, rate");
         }
 
-        HttpUtil.validateCodes(baseCurrencyCode, targetCurrencyCode);
-        BigDecimal rateDecimal = HttpUtil.getBigDecimal(rate);
+        CurrencyPair validCodePair = HttpValidator.getValidCurrencyPair(baseCurrencyCode, targetCurrencyCode);
+        BigDecimal rateDecimal = HttpValidator.getBigDecimal(rate);
 
-        CurrencyDto baseCurrencyByCode = currencyService.getCurrencyByCode(baseCurrencyCode);
-        CurrencyDto targetCurrencyByCode = currencyService.getCurrencyByCode(targetCurrencyCode);
+        CurrencyDto baseCurrencyByCode = currencyService.getCurrencyByCode(validCodePair.baseCurrency());
+        CurrencyDto targetCurrencyByCode = currencyService.getCurrencyByCode(validCodePair.targetCurrency());
 
         ExchangeRateDto exchangeRateToSave = ExchangeRateDto.builder()
                 .id(0)

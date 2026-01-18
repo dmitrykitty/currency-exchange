@@ -3,7 +3,7 @@ package com.dnikitin.controllers.servlets;
 import com.dnikitin.controllers.AppContext;
 import com.dnikitin.exceptions.InvalidParamsException;
 import com.dnikitin.services.ExchangeService;
-import com.dnikitin.util.HttpUtil;
+import com.dnikitin.util.HttpValidator;
 import com.dnikitin.vo.CurrencyPair;
 import com.dnikitin.dto.ExchangeValueDto;
 
@@ -43,10 +43,10 @@ public class ExchangeServlet extends HttpServlet {
             throw new InvalidParamsException("Missing required fields: from, to, amount");
         }
 
-        HttpUtil.validateCodes(from, to);
-        BigDecimal amountDecimal = HttpUtil.getBigDecimal(amount);
+        CurrencyPair validCodePair = HttpValidator.getValidCurrencyPair(from, to);
+        BigDecimal amountDecimal = HttpValidator.getBigDecimal(amount);
 
-        ExchangeValueDto exchangeValue = exchangeService.exchange(new CurrencyPair(from, to), amountDecimal);
+        ExchangeValueDto exchangeValue = exchangeService.exchange(validCodePair, amountDecimal);
 
         jsonMapper.writeValue(resp.getWriter(), exchangeValue);
     }

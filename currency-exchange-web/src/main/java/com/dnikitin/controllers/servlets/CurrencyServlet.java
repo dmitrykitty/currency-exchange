@@ -5,7 +5,7 @@ import com.dnikitin.dto.CurrencyDto;
 import com.dnikitin.exceptions.InvalidParamsException;
 import com.dnikitin.services.CurrencyService;
 
-import com.dnikitin.util.HttpUtil;
+import com.dnikitin.util.HttpValidator;
 import tools.jackson.databind.json.JsonMapper;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -39,9 +39,9 @@ public class CurrencyServlet extends HttpServlet {
         }
 
         pathInfo = pathInfo.substring(1); //remove /
-        HttpUtil.validateCode(pathInfo);
+        String validCode = HttpValidator.getValidCode(pathInfo);
 
-        CurrencyDto currencyByCode = currencyService.getCurrencyByCode(pathInfo);
+        CurrencyDto currencyByCode = currencyService.getCurrencyByCode(validCode);
         jsonMapper.writeValue(resp.getWriter(), currencyByCode);
     }
 }

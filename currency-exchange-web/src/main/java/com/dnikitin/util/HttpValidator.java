@@ -19,14 +19,14 @@ import static java.util.stream.Collectors.toMap;
  * Includes methods for parsing request bodies and validating path parameters.
  */
 @UtilityClass
-public class HttpUtil {
+public class HttpValidator {
     /**
      * Parses the request body from x-www-form-urlencoded format into a Map.
      *
      * @param reader The BufferedReader containing the request body.
      * @return A map of decoded key-value pairs.
      */
-    public Map<String, String> prepareRequestParams(BufferedReader reader) {
+    public Map<String, String> getRequestParams(BufferedReader reader) {
         String body = reader.lines().collect(joining());
         if (body.isEmpty()) {
             return Map.of();
@@ -39,10 +39,6 @@ public class HttpUtil {
 
     }
 
-    public String decode(String value) {
-        return URLDecoder.decode(value, StandardCharsets.UTF_8);
-    }
-
     /**
      * Extracts and validates a 6-character currency pair from path information.
      *
@@ -50,7 +46,7 @@ public class HttpUtil {
      * @return A {@link com.dnikitin.vo.CurrencyPair} object.
      * @throws InvalidParamsException if the format is invalid.
      */
-    public CurrencyPair prepareCurrencyPair(String pathInfo) {
+    public CurrencyPair getValidCurrencyPair(String pathInfo) {
         if (pathInfo == null || pathInfo.equals("/")) {
             throw new InvalidParamsException("Missing currency pair");
         }
@@ -67,30 +63,33 @@ public class HttpUtil {
         return new CurrencyPair(baseCode, targetCode);
     }
 
-    public void validateCurrencyPair(String pair) {
-        if (!pair.matches("[A-Z]{6}")) {
-            throw new InvalidParamsException("Invalid currency pair. Correct format <code1><code2>, for example USDEUR");
+    public CurrencyPair getValidCurrencyPair(String code1, String code2) {
+        String validCode1 = getValidCode(code1);
+        String validCode2 = getValidCode(code2);
+
+        if (validCode1.equals(validCode2)) {
+            throw new InvalidParamsException("Currencies codes should be different.");
         }
+
+        return new CurrencyPair(validCode1, validCode2);
     }
 
-    public void validateCode(String code) {
-        if (!code.matches("[A-Z]{3}")) {
-            throw new InvalidParamsException("Invalid currency code. Correct format USD.");
-        }
+    public String getValidName(String name){
+        name = name.trim().replaceAll(" +", " ");
+        validateName(name);
+        return name;
     }
 
-    public void validateName(String name) {
-        if (!name.matches("[a-zA-Z -]{4,32}")) {
-            throw new InvalidParamsException(
-                    "Invalid currency name. Correct name is built with [a-zA-Z -] and has name from 4 to 32 symbols.");
-        }
+    public String getValidCode(String code) {
+        code = code.trim().toUpperCase();
+        validateCode(code);
+        return code;
     }
 
-    public void validateSign(String sign) {
-        if (!sign.matches(".{0,4}")) {
-            throw new InvalidParamsException(
-                    "Invalid currency sign. Max length is 4.");
-        }
+    public String getValidSign(String sign) {
+        sign = sign.trim().replaceAll(" +", " ");
+        validateSign(sign);
+        return sign;
     }
 
     public BigDecimal getBigDecimal(String bd) {
@@ -101,14 +100,39 @@ public class HttpUtil {
         }
     }
 
-    public void validateCodes(String code1, String code2) {
-        validateCode(code1);
-        validateCode(code2);
+    private String decode(String value) {
+        return URLDecoder.decode(value, StandardCharsets.UTF_8);
+    }
 
-        if (code1.equals(code2)) {
-            throw new InvalidParamsException("Currencies codes should be different.");
+    private void validateCurrencyPair(String pair) {
+        if (!pair.matches("[A-Z]{6}")) {
+            throw new InvalidParamsException(
+                    "Invalid currency pair. Correct format <code1><code2>, for example USDEUR.");
         }
     }
+
+    private void validateCode(String code) {
+        if (!code.matches("[A-Z]{3}")) {
+            throw new InvalidParamsException(
+                    "Invalid currency code. Correct code built witch [A-Z] and has exactly 3 symbols.");
+        }
+    }
+
+    private void validateName(String name) {
+        if (!name.matches("[a-zA-Z ]{4,32}")) {
+            throw new InvalidParamsException(
+                    "Invalid currency name. Correct name is built with [a-zA-Z ] and has name from 4 to 32 symbols.");
+        }
+    }
+
+    private void validateSign(String sign) {
+        if (!sign.matches(".{0,4}")) {
+            throw new InvalidParamsException(
+                    "Invalid currency sign. Max length is 4.");
+        }
+    }
+
+
 
 
 }

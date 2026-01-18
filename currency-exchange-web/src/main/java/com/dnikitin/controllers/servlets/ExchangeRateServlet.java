@@ -4,7 +4,7 @@ import com.dnikitin.controllers.AppContext;
 import com.dnikitin.dto.ExchangeRateDto;
 import com.dnikitin.exceptions.InvalidParamsException;
 import com.dnikitin.services.ExchangeRateService;
-import com.dnikitin.util.HttpUtil;
+import com.dnikitin.util.HttpValidator;
 import com.dnikitin.vo.CurrencyPair;
 
 import tools.jackson.databind.json.JsonMapper;
@@ -47,7 +47,7 @@ public class ExchangeRateServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String pathInfo = req.getPathInfo();
-        CurrencyPair currencyPair = HttpUtil.prepareCurrencyPair(pathInfo);
+        CurrencyPair currencyPair = HttpValidator.getValidCurrencyPair(pathInfo);
 
         ExchangeRateDto exchangeRateByCodes = exchangeRateService.getExchangeRateByCodes(currencyPair);
 
@@ -55,7 +55,8 @@ public class ExchangeRateServlet extends HttpServlet {
     }
 
     private void doPatch(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        Map<String, String> params = HttpUtil.prepareRequestParams(req.getReader());
+        Map<String, String> params = HttpValidator.getRequestParams(req.getReader());
+
         String rate = params.get("rate");
         if (rate == null) {
             throw new InvalidParamsException("Missing required fields: rate");
@@ -63,8 +64,8 @@ public class ExchangeRateServlet extends HttpServlet {
 
         String pathInfo = req.getPathInfo();
 
-        CurrencyPair currencyPair = HttpUtil.prepareCurrencyPair(pathInfo);
-        BigDecimal rateDecimal = HttpUtil.getBigDecimal(rate);
+        CurrencyPair currencyPair = HttpValidator.getValidCurrencyPair(pathInfo);
+        BigDecimal rateDecimal = HttpValidator.getBigDecimal(rate);
 
         ExchangeRateDto exchangeRate = exchangeRateService.updateExchangeRate(currencyPair, rateDecimal);
 

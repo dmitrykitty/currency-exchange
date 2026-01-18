@@ -4,7 +4,7 @@ import com.dnikitin.controllers.AppContext;
 import com.dnikitin.dto.CurrencyDto;
 import com.dnikitin.exceptions.InvalidParamsException;
 import com.dnikitin.services.CurrencyService;
-import com.dnikitin.util.HttpUtil;
+import com.dnikitin.util.HttpValidator;
 
 import tools.jackson.databind.json.JsonMapper;
 import jakarta.servlet.annotation.WebServlet;
@@ -49,15 +49,15 @@ public class CurrenciesServlet extends HttpServlet {
             throw new InvalidParamsException("Missing required fields: code, name, or sign");
         }
 
-        HttpUtil.validateName(name);
-        HttpUtil.validateCode(code);
-        HttpUtil.validateSign(sign);
+        String validName = HttpValidator.getValidName(name);
+        String validCode = HttpValidator.getValidCode(code);
+        String validSign = HttpValidator.getValidSign(sign);
 
         CurrencyDto currencyToSave = CurrencyDto.builder()
                 .id(0)
-                .name(name)
-                .code(code)
-                .sign(sign)
+                .name(validName)
+                .code(validCode)
+                .sign(validSign)
                 .build();
 
         CurrencyDto savedCurrency = currencyService.saveCurrency(currencyToSave);
