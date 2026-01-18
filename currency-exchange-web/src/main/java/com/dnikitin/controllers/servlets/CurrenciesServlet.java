@@ -1,10 +1,10 @@
 package com.dnikitin.controllers.servlets;
 
 import com.dnikitin.controllers.AppContext;
-import com.dnikitin.entity.CurrencyEntity;
+import com.dnikitin.dto.CurrencyDto;
 import com.dnikitin.exceptions.InvalidInputBodyException;
 import com.dnikitin.services.CurrencyService;
-import jakarta.servlet.ServletException;
+
 import tools.jackson.databind.json.JsonMapper;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -24,7 +24,7 @@ public class CurrenciesServlet extends HttpServlet {
     private JsonMapper jsonMapper;
 
     @Override
-    public void init() throws ServletException {
+    public void init(){
         AppContext context = (AppContext) getServletContext().getAttribute(AppContext.class.getSimpleName());
 
         currencyService = context.getCurrencyService();
@@ -32,7 +32,7 @@ public class CurrenciesServlet extends HttpServlet {
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        List<CurrencyEntity> currencies = currencyService.getCurrencies();
+        List<CurrencyDto> currencies = currencyService.getCurrencies();
 
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
@@ -51,18 +51,18 @@ public class CurrenciesServlet extends HttpServlet {
             throw new InvalidInputBodyException("Missing required fields: code, name, or sign");
         }
 
-        CurrencyEntity currencyToSave = CurrencyEntity.builder()
+        CurrencyDto currencyToSave = CurrencyDto.builder()
                 .id(0)
                 .name(name)
                 .code(code)
                 .sign(sign)
                 .build();
 
-        CurrencyEntity currencyEntity = currencyService.saveCurrency(currencyToSave);
+        CurrencyDto savedCurrency = currencyService.saveCurrency(currencyToSave);
 
         resp.setStatus(HttpServletResponse.SC_CREATED);
 
-        jsonMapper.writeValue(resp.getWriter(), currencyEntity);
+        jsonMapper.writeValue(resp.getWriter(), savedCurrency);
 
     }
 }

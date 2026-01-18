@@ -2,8 +2,10 @@ package com.dnikitin.services;
 
 import com.dnikitin.dao.Dao;
 import com.dnikitin.dao.ExchangeRateDao;
+import com.dnikitin.dto.ExchangeRateDto;
 import com.dnikitin.entity.ExchangeRateEntity;
 import com.dnikitin.exceptions.*;
+import com.dnikitin.mappers.EntityDtoMapper;
 import com.dnikitin.vo.CurrencyPair;
 
 import java.math.BigDecimal;
@@ -16,9 +18,12 @@ import java.util.Optional;
  */
 public class ExchangeRateService {
     private final Dao<CurrencyPair, ExchangeRateEntity> exchangeRateDao;
+    private final EntityDtoMapper<ExchangeRateEntity, ExchangeRateDto> exchangeRateDtoMapper;
 
-    public ExchangeRateService(Dao<CurrencyPair, ExchangeRateEntity> exchangeRateDao) {
+    public ExchangeRateService(Dao<CurrencyPair, ExchangeRateEntity> exchangeRateDao,
+                               EntityDtoMapper<ExchangeRateEntity, ExchangeRateDto> exchangeRateDtoMapper) {
         this.exchangeRateDao = exchangeRateDao;
+        this.exchangeRateDtoMapper = exchangeRateDtoMapper;
     }
 
     /**
@@ -26,28 +31,32 @@ public class ExchangeRateService {
      *
      * @return A list of {@link ExchangeRateEntity} objects.
      */
-    public List<ExchangeRateEntity> getExchangeRates() {
+    public List<ExchangeRateDto> getExchangeRates() {
         try {
-
-            return exchangeRateDao.findAll();
+            return exchangeRateDao.findAll().stream()
+                    .map(exchangeRateDtoMapper::mapToDto)
+                    .toList();
         } catch (DatabaseException e) {
             throw new ServiceUnavailableException(e.getMessage(), e);
         }
     }
 
-    public ExchangeRateEntity getExchangeRateByCodes(CurrencyPair currencyPair) {
+    public ExchangeRateDto getExchangeRateByCodes(CurrencyPair currencyPair) {
         try {
             Optional<ExchangeRateEntity> maybeExchangeRate = exchangeRateDao.findById(currencyPair);
-            return maybeExchangeRate.orElseThrow(() ->
+            ExchangeRateEntity exchangeRateEntity = maybeExchangeRate.orElseThrow(() ->
                     new EntityNotFoundException("No exchange rate for currency pair " + currencyPair + " found"));
+            return exchangeRateDtoMapper.mapToDto(exchangeRateEntity);
         } catch (DatabaseException e) {
             throw new ServiceUnavailableException(e.getMessage(), e);
         }
     }
 
-    public ExchangeRateEntity saveExchangeRate(ExchangeRateEntity exchangeRate) {
+    public ExchangeRateDto saveExchangeRate(ExchangeRateDto exchangeRate) {
         try {
-            return exchangeRateDao.save(exchangeRate);
+            ExchangeRateEntity exchangeRateEntity = exchangeRateDtoMapper.mapToEntity(exchangeRate);
+            ExchangeRateEntity savedExchangeRate = exchangeRateDao.save(exchangeRateEntity);
+            return exchangeRateDtoMapper.mapToDto(savedExchangeRate);
         } catch (DataIntegrityViolationException e) {
             throw new EntityAlreadyExistsException(e.getMessage(), e);
         } catch (DatabaseException e) {
@@ -63,10 +72,11 @@ public class ExchangeRateService {
      * @return The updated {@link ExchangeRateEntity}.
      * @throws EntityNotFoundException If the currency pair does not exist.
      */
-    public ExchangeRateEntity updateExchangeRate(CurrencyPair currencyPair, BigDecimal rate) {
+    public ExchangeRateDto updateExchangeRate(CurrencyPair currencyPair, BigDecimal rate) {
         try {
             ExchangeRateDao exchangeRateDaoNew = (ExchangeRateDao) exchangeRateDao;
-            return exchangeRateDaoNew.update(currencyPair, rate);
+            ExchangeRateEntity updatedEntity = exchangeRateDaoNew.update(currencyPair, rate);
+            return exchangeRateDtoMapper.mapToDto(updatedEntity);
         } catch (DataNotFoundException e) {
             throw new EntityNotFoundException(e.getMessage());
         } catch (DatabaseException e) {

@@ -1,11 +1,12 @@
 package com.dnikitin.controllers.servlets;
 
 import com.dnikitin.controllers.AppContext;
-import com.dnikitin.entity.CurrencyEntity;
-import com.dnikitin.entity.ExchangeRateEntity;
+import com.dnikitin.dto.CurrencyDto;
+import com.dnikitin.dto.ExchangeRateDto;
 import com.dnikitin.exceptions.InvalidInputBodyException;
 import com.dnikitin.services.CurrencyService;
 import com.dnikitin.services.ExchangeRateService;
+
 import tools.jackson.databind.json.JsonMapper;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -38,7 +39,7 @@ public class ExchangeRatesServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws  IOException {
 
-        List<ExchangeRateEntity> exchangeRates = exchangeRateService.getExchangeRates();
+        List<ExchangeRateDto> exchangeRates = exchangeRateService.getExchangeRates();
 
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");
@@ -56,21 +57,21 @@ public class ExchangeRatesServlet extends HttpServlet {
             throw new InvalidInputBodyException("Missing required fields: baseCurrencyCode, targetCurrencyCode, rate");
         }
 
-        CurrencyEntity baseCurrencyByCode = currencyService.getCurrencyByCode(baseCurrencyCode);
-        CurrencyEntity targetCurrencyByCode = currencyService.getCurrencyByCode(targetCurrencyCode);
+        CurrencyDto baseCurrencyByCode = currencyService.getCurrencyByCode(baseCurrencyCode);
+        CurrencyDto targetCurrencyByCode = currencyService.getCurrencyByCode(targetCurrencyCode);
         BigDecimal rateDecimal = new BigDecimal(rate);
 
-        ExchangeRateEntity exchangeRateToSave = ExchangeRateEntity.builder()
+        ExchangeRateDto exchangeRateToSave = ExchangeRateDto.builder()
                 .id(0)
                 .targetCurrency(targetCurrencyByCode)
                 .baseCurrency(baseCurrencyByCode)
                 .rate(rateDecimal)
                 .build();
 
-        ExchangeRateEntity exchangeRateEntity = exchangeRateService.saveExchangeRate(exchangeRateToSave);
+        ExchangeRateDto savedExchangeRate = exchangeRateService.saveExchangeRate(exchangeRateToSave);
 
         resp.setStatus(HttpServletResponse.SC_CREATED);
 
-        jsonMapper.writeValue(resp.getWriter(),exchangeRateEntity);
+        jsonMapper.writeValue(resp.getWriter(),savedExchangeRate);
     }
 }

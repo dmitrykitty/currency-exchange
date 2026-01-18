@@ -2,7 +2,9 @@ package com.dnikitin.controllers;
 
 import com.dnikitin.dao.CurrencyDao;
 import com.dnikitin.dao.ExchangeRateDao;
+import com.dnikitin.mappers.CurrencyDtoMapper;
 import com.dnikitin.mappers.CurrencyMapper;
+import com.dnikitin.mappers.ExchangeRateDtoMapper;
 import com.dnikitin.mappers.ExchangeRowMapper;
 import com.dnikitin.services.CurrencyService;
 import com.dnikitin.services.ExchangeRateService;
@@ -38,12 +40,14 @@ public class AppContext {
     public AppContext() {
         CurrencyMapper currencyMapper = new CurrencyMapper();
         ExchangeRowMapper exchangeRowMapper = new ExchangeRowMapper();
+        CurrencyDtoMapper currencyDtoMapper = new CurrencyDtoMapper();
+        ExchangeRateDtoMapper exchangeRateDtoMapper = new ExchangeRateDtoMapper(currencyDtoMapper);
 
         currencyDao = new CurrencyDao(currencyMapper);
         exchangeRateDao = new ExchangeRateDao(exchangeRowMapper);
 
-        currencyService = new CurrencyService(currencyDao);
-        exchangeRateService = new ExchangeRateService(exchangeRateDao);
+        currencyService = new CurrencyService(currencyDao, currencyDtoMapper);
+        exchangeRateService = new ExchangeRateService(exchangeRateDao, exchangeRateDtoMapper);
         exchangeService = new ExchangeService(exchangeRateDao, currencyService);
 
         jsonMapper = Json.getInstance();

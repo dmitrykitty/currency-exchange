@@ -1,11 +1,11 @@
 package com.dnikitin.services;
 
 import com.dnikitin.dao.Dao;
-import com.dnikitin.entity.CurrencyEntity;
+import com.dnikitin.dto.CurrencyDto;
 import com.dnikitin.entity.ExchangeRateEntity;
 import com.dnikitin.exceptions.EntityNotFoundException;
 import com.dnikitin.vo.CurrencyPair;
-import com.dnikitin.dto.ExchangeValue;
+import com.dnikitin.dto.ExchangeValueDto;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -37,20 +37,20 @@ public class ExchangeService {
      *
      * @param currencyPair The pair defining the base and target currencies.
      * @param amount       The amount of base currency to be converted.
-     * @return An {@link com.dnikitin.dto.ExchangeValue} containing the conversion details.
+     * @return An {@link ExchangeValueDto} containing the conversion details.
      * @throws com.dnikitin.exceptions.EntityNotFoundException If no exchange path (direct, reverse, or cross) is found.
      */
-    public ExchangeValue exchange(CurrencyPair currencyPair, BigDecimal amount){
+    public ExchangeValueDto exchange(CurrencyPair currencyPair, BigDecimal amount){
         BigDecimal exchangeRate = findExchangeRate(currencyPair);
 
-        CurrencyEntity baseCurrency = currencyService.getCurrencyByCode(currencyPair.baseCurrency());
-        CurrencyEntity targetCurrency = currencyService.getCurrencyByCode(currencyPair.targetCurrency());
+        CurrencyDto baseCurrencyDto = currencyService.getCurrencyByCode(currencyPair.baseCurrency());
+        CurrencyDto targetCurrencyDto = currencyService.getCurrencyByCode(currencyPair.targetCurrency());
 
         BigDecimal convertedAmount = getConvertedAmount(exchangeRate,amount);
 
-        return ExchangeValue.builder()
-                .baseCurrency(baseCurrency)
-                .targetCurrency(targetCurrency)
+        return ExchangeValueDto.builder()
+                .baseCurrency(baseCurrencyDto)
+                .targetCurrency(targetCurrencyDto)
                 .rate(exchangeRate)
                 .amount(amount)
                 .convertedAmount(convertedAmount)

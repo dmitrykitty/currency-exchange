@@ -4,8 +4,8 @@ import com.dnikitin.controllers.AppContext;
 import com.dnikitin.exceptions.InvalidCurrencyException;
 import com.dnikitin.services.ExchangeService;
 import com.dnikitin.vo.CurrencyPair;
-import com.dnikitin.dto.ExchangeValue;
-import jakarta.servlet.ServletException;
+import com.dnikitin.dto.ExchangeValueDto;
+
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -25,7 +25,7 @@ public class ExchangeServlet extends HttpServlet {
     private JsonMapper jsonMapper;
 
     @Override
-    public void init() throws ServletException {
+    public void init(){
         AppContext context = (AppContext) getServletContext().getAttribute(AppContext.class.getSimpleName());
 
         exchangeService = context.getExchangeService();
@@ -33,7 +33,7 @@ public class ExchangeServlet extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String from = req.getParameter("from");
         String to = req.getParameter("to");
         String amount = req.getParameter("amount");
@@ -43,7 +43,7 @@ public class ExchangeServlet extends HttpServlet {
         }
 
         BigDecimal amountDecimal = new BigDecimal(amount);
-        ExchangeValue exchangeValue = exchangeService.exchange(new CurrencyPair(from, to), amountDecimal);
+        ExchangeValueDto exchangeValue = exchangeService.exchange(new CurrencyPair(from, to), amountDecimal);
 
         jsonMapper.writeValue(resp.getWriter(), exchangeValue);
     }

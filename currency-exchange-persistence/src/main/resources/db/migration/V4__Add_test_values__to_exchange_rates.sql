@@ -1,6 +1,3 @@
--- Czyścimy starą próbę, jeśli baza nie jest transakcyjna (opcjonalnie w SQLite)
-DELETE FROM exchange_rates;
-
 INSERT INTO exchange_rates (base_currency_id, target_currency_id, rate)
 VALUES
     ((SELECT id FROM currencies WHERE code = 'USD'), (SELECT id FROM currencies WHERE code = 'EUR'), 0.94),

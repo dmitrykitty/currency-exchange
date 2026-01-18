@@ -6,9 +6,9 @@ import lombok.Builder;
 import java.math.BigDecimal;
 
 @Builder
-public record ExchangeValue(
-        CurrencyEntity baseCurrency,
-        CurrencyEntity targetCurrency,
+public record ExchangeValueDto(
+        CurrencyDto baseCurrency,
+        CurrencyDto targetCurrency,
         BigDecimal rate,
         BigDecimal amount,
         BigDecimal convertedAmount) {

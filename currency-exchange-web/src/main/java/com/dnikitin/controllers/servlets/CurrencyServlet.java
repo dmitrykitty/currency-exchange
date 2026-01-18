@@ -1,11 +1,10 @@
 package com.dnikitin.controllers.servlets;
 
 import com.dnikitin.controllers.AppContext;
-import com.dnikitin.entity.CurrencyEntity;
+import com.dnikitin.dto.CurrencyDto;
 import com.dnikitin.exceptions.InvalidCurrencyException;
 import com.dnikitin.services.CurrencyService;
-import com.dnikitin.util.Json;
-import jakarta.servlet.ServletException;
+
 import tools.jackson.databind.json.JsonMapper;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -24,7 +23,7 @@ public class CurrencyServlet extends HttpServlet {
     private JsonMapper jsonMapper;
 
     @Override
-    public void init() throws ServletException {
+    public void init() {
         AppContext context = (AppContext) getServletContext().getAttribute(AppContext.class.getSimpleName());
 
         currencyService = context.getCurrencyService();
@@ -39,11 +38,11 @@ public class CurrencyServlet extends HttpServlet {
         }
 
         pathInfo = pathInfo.substring(1); //remove /
-        if(!pathInfo.matches("[A-Z]{3}")){
+        if (!pathInfo.matches("[A-Z]{3}")) {
             throw new InvalidCurrencyException("Invalid currency code. Correct format <code1>, for example USD");
         }
 
-        CurrencyEntity currencyByCode = currencyService.getCurrencyByCode(pathInfo);
+        CurrencyDto currencyByCode = currencyService.getCurrencyByCode(pathInfo);
         jsonMapper.writeValue(resp.getWriter(), currencyByCode);
     }
 }

@@ -1,11 +1,12 @@
 package com.dnikitin.controllers.servlets;
 
 import com.dnikitin.controllers.AppContext;
-import com.dnikitin.entity.ExchangeRateEntity;
+import com.dnikitin.dto.ExchangeRateDto;
 import com.dnikitin.exceptions.InvalidCurrencyException;
 import com.dnikitin.services.ExchangeRateService;
 import com.dnikitin.util.HttpUtil;
 import com.dnikitin.vo.CurrencyPair;
+
 import tools.jackson.databind.json.JsonMapper;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -44,7 +45,7 @@ public class ExchangeRateServlet extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String pathInfo = req.getPathInfo();
         CurrencyPair currencyPair = HttpUtil.prepareCurrencyPair(pathInfo);
 
@@ -52,7 +53,7 @@ public class ExchangeRateServlet extends HttpServlet {
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");
 
-        ExchangeRateEntity exchangeRateByCodes = exchangeRateService.getExchangeRateByCodes(currencyPair);
+        ExchangeRateDto exchangeRateByCodes = exchangeRateService.getExchangeRateByCodes(currencyPair);
 
         jsonMapper.writeValue(resp.getWriter(), exchangeRateByCodes);
     }
@@ -68,9 +69,9 @@ public class ExchangeRateServlet extends HttpServlet {
         CurrencyPair currencyPair = HttpUtil.prepareCurrencyPair(pathInfo);
         BigDecimal rateDecimal = new BigDecimal(rate);
 
-        ExchangeRateEntity exchangeRateEntity = exchangeRateService.updateExchangeRate(currencyPair, rateDecimal);
+        ExchangeRateDto exchangeRate = exchangeRateService.updateExchangeRate(currencyPair, rateDecimal);
 
-        jsonMapper.writeValue(resp.getWriter(), exchangeRateEntity);
+        jsonMapper.writeValue(resp.getWriter(), exchangeRate);
     }
 
 }
