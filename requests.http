@@ -1,12 +1,12 @@
 ###
-GET http://localhost:8080/api/currencies
+GET http://52.57.92.236:8080/api/currencies
 
 ###
-POST http://localhost:8080/api/currencies
+POST http://52.57.92.236:8080/api/currencies
 Content-Type: application/x-www-form-urlencoded
 
 ###
-POST http://localhost:8080/api/currencies
+POST http://52.57.92.236:8080/api/currencies
 Content-Type: application/x-www-form-urlencoded
 
 name = Australian dollar &
@@ -15,7 +15,7 @@ sign =A$
 
 
 ###
-POST http://localhost:8080/api/currencies
+POST http://52.57.92.236:8080/api/currencies
 Content-Type: application/x-www-form-urlencoded
 
 
@@ -24,7 +24,7 @@ name = Australian dollar &
 sign = A$
 
 ###
-POST http://localhost:8080/api/currencies
+POST http://52.57.92.236:8080/api/currencies
 Content-Type: application/x-www-form-urlencoded
 
 code = TES &
@@ -32,7 +32,7 @@ name = test1 &
 sign = T
 
 ###
-POST http://localhost:8080/api/currencies
+POST http://52.57.92.236:8080/api/currencies
 Content-Type: application/x-www-form-urlencoded
 
 code = TSE &
@@ -40,23 +40,23 @@ name = test2 &
 sign = T
 
 ###
-GET http://localhost:8080/api/currency/BYN
+GET http://52.57.92.236:8080/api/currency/BYN
 
 ###
-GET http://localhost:8080/api/currency/US
+GET http://52.57.92.236:8080/api/currency/US
 
 ###
-GET http://localhost:8080/api/currency/
+GET http://52.57.92.236:8080/api/currency/
 
 ###
-GET http://localhost:8080/api/currency/EUR
+GET http://52.57.92.236:8080/api/currency/EUR
 
 
 ###
-GET http://localhost:8080/api/exchangeRates
+GET http://52.57.92.236:8080/api/exchangeRates
 
 ###
-POST http://localhost:8080/api/exchangeRates
+POST http://52.57.92.236:8080/api/exchangeRates
 Content-Type: application/x-www-form-urlencoded
 
 baseCurrencyCode = TES &
@@ -64,7 +64,7 @@ targetCurrencyCode = TSE &
 rate = 1.2534
 
 ###
-PATCH http://localhost:8080/api/exchangeRate/TESTSE
+PATCH http://52.57.92.236:8080/api/exchangeRate/TESTSE
 Content-Type: application/x-www-form-urlencoded
 
 rate=1.535
@@ -72,16 +72,16 @@ rate=1.535
 
 # exchangeRate by Codes
 ###
-GET http://localhost:8080/api/exchangeRate/USDRUB
+GET http://52.57.92.236:8080/api/exchangeRate/USDRUB
 
 ###
-GET http://localhost:8080/api/exchangeRate/USDRUK
+GET http://52.57.92.236:8080/api/exchangeRate/USDRUK
 
 ###
-GET http://localhost:8080/api/exchangeRate/USDR
+GET http://52.57.92.236:8080/api/exchangeRate/USDR
 
 ###
-GET http://localhost:8080/api/exchangeRate/
+GET http://52.57.92.236:8080/api/exchangeRate/
 
 ###
-GET localhost:8080/api/exchange?from=TES&to=TSE&amount=10
+GET http://52.57.92.236:8080/exchange?from=TES&to=TSE&amount=10
